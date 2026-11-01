@@ -1,0 +1,339 @@
+﻿@model SmartBank.ViewModels.RaastTransferViewModel
+
+@{
+    ViewData["Title"] = "Raast ID Transfer";
+    var beneficiaries = (List<Beneficiary>)ViewBag.Beneficiaries;
+}
+
+<style>
+    .raast-page {
+        background: #f4f7fb;
+        min-height: 85vh;
+        padding: 35px 12px;
+    }
+
+    .raast-card {
+        max-width: 680px;
+        margin: auto;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(16, 42, 67, .09);
+    }
+
+    .raast-header {
+        background: linear-gradient(135deg, #102a43, #173f5f);
+        color: white;
+        padding: 25px 30px;
+        border-bottom: 4px solid #d4a84f;
+    }
+
+        .raast-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .raast-header p {
+            color: #dce6ef;
+            font-size: 13px;
+            margin: 9px 0 0;
+        }
+
+    .raast-body {
+        padding: 30px;
+    }
+
+    .section-title {
+        color: #102a43;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        color: #173f5f;
+        font-weight: 600;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        padding: 11px 13px;
+        border: 1px solid #dce3eb;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #d4a84f;
+            box-shadow: 0 0 0 3px rgba(212, 168, 79, .15);
+        }
+
+    .form-text {
+        font-size: 12px;
+    }
+
+    .btn-raast {
+        background: #102a43;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 11px 24px;
+        font-weight: 600;
+    }
+
+        .btn-raast:hover {
+            background: #173f5f;
+            color: white;
+        }
+
+    .btn-cancel {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 11px 16px;
+    }
+
+        .btn-cancel:hover {
+            color: #102a43;
+        }
+
+    .raast-info {
+        background: #edf6ff;
+        border: 1px solid #d5e7f7;
+        border-radius: 9px;
+        padding: 13px 15px;
+        color: #285579;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .security-note {
+        background: #fff9e9;
+        border: 1px solid #f0dfb5;
+        border-radius: 8px;
+        padding: 12px 15px;
+        color: #80621e;
+        font-size: 13px;
+        margin-top: 20px;
+    }
+
+    #holderName {
+        font-weight: 600;
+        margin-top: 7px;
+    }
+
+    @@media (max-width: 576px) {
+        .raast-body {
+            padding: 22px 17px;
+        }
+
+        .raast-header {
+            padding: 22px 20px;
+        }
+
+        .btn-raast {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="raast-page">
+    <div class="raast-card">
+
+        <!-- Header -->
+        <div class="raast-header">
+            <h3>
+                <i class="bi bi-lightning-charge-fill me-2"></i>
+                Raast ID Transfer
+            </h3>
+            <p>Send money instantly using the receiver's registered Raast ID.</p>
+        </div>
+
+        <div class="raast-body">
+
+            <div class="raast-info">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Raast ID is the receiver's mobile number.
+                Demo: only SmartBank-registered numbers work.
+            </div>
+
+            <h5 class="section-title">
+                <i class="bi bi-send me-2"></i>
+                Transfer Details
+            </h5>
+
+            <form asp-action="Raast" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <!-- From Account -->
+                <div class="mb-3">
+                    <label asp-for="FromAccountId" class="form-label">
+                        <i class="bi bi-bank me-1"></i>
+                        Select Your Account
+                    </label>
+
+                    <select asp-for="FromAccountId"
+                            asp-items="@((SelectList)ViewBag.Accounts)"
+                            class="form-select">
+                        <option value="">-- Select account --</option>
+                    </select>
+
+                    <span asp-validation-for="FromAccountId"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Beneficiary -->
+                @if (beneficiaries.Any())
+                {
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-person-check me-1"></i>
+                            Saved Beneficiary
+                        </label>
+
+                        <select id="benSelect" class="form-select">
+                            <option value="">-- Choose (optional) --</option>
+
+                            @foreach (var b in beneficiaries)
+                            {
+                                <option value="@b.AccountNumber">
+                                    @b.Name (@b.AccountNumber)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                }
+
+                <!-- Raast ID -->
+                <div class="mb-3">
+                    <label asp-for="RaastId" class="form-label">
+                        <i class="bi bi-phone me-1"></i>
+                        Receiver Raast ID
+                    </label>
+
+                    <input asp-for="RaastId"
+                           class="form-control"
+                           placeholder="03001234567" />
+
+                    <div id="holderName" class="form-text"></div>
+
+                    <span asp-validation-for="RaastId"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Amount -->
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label">
+                        <i class="bi bi-cash-stack me-1"></i>
+                        Transfer Amount (Rs)
+                    </label>
+
+                    <input asp-for="Amount"
+                           type="number"
+                           step="0.01"
+                           class="form-control"
+                           placeholder="Enter amount" />
+
+                    <span asp-validation-for="Amount"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Note -->
+                <div class="mb-3">
+                    <label asp-for="Note" class="form-label">
+                        <i class="bi bi-card-text me-1"></i>
+                        Payment Note
+                    </label>
+
+                    <input asp-for="Note"
+                           class="form-control"
+                           placeholder="Optional" />
+                </div>
+
+                <!-- PIN -->
+                <div class="mb-4">
+                    <label asp-for="Pin" class="form-label">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Transaction PIN
+                    </label>
+
+                    <input asp-for="Pin"
+                           class="form-control"
+                           maxlength="4"
+                           autocomplete="off"
+                           placeholder="Enter 4-digit PIN" />
+
+                    <span asp-validation-for="Pin"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <button type="submit" class="btn btn-raast">
+                        <i class="bi bi-send-fill me-2"></i>
+                        Send Money
+                    </button>
+
+                    <a class="btn-cancel"
+                       asp-controller="Account"
+                       asp-action="Index">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Cancel
+                    </a>
+                </div>
+
+                <div class="security-note">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Always verify the receiver's Raast ID before sending
+                    money. Never share your transaction PIN.
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Raast ID likho to receiver ka naam aa jata hai
+        function lookup() {
+            var id = $("#RaastId").val().trim();
+            var box = $("#holderName");
+
+            if (!id) {
+                box.text("");
+                return;
+            }
+
+            $.getJSON("@Url.Action("LookupRaast", "Payment")", { id: id }, function (res) {
+                if (res.found) {
+                    box.removeClass("text-danger")
+                        .addClass("text-success")
+                        .text("Account holder: " + res.name);
+                } else {
+                    box.removeClass("text-success")
+                        .addClass("text-danger")
+                        .text("Raast ID not registered");
+                }
+            });
+        }
+
+        $("#RaastId").on("blur", lookup);
+
+        $("#benSelect").on("change", function () {
+            $("#RaastId").val($(this).val());
+            lookup();
+        });
+    </script>
+}

@@ -1,0 +1,570 @@
+﻿@model List<Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+
+    var total = Model?.Count ?? 0;
+    var unread = Model?.Count(n => !n.IsRead) ?? 0;
+    var sms = Model?.Count(n => n.Channel == "SMS") ?? 0;
+    var email = Model?.Count(n => n.Channel == "Email") ?? 0;
+}
+
+<style>
+    .notification-page {
+        --navy: #102b46;
+        --navy-light: #193e60;
+        --gold: #c9a44c;
+        --gold-light: #f8f1df;
+        color: #26384a;
+    }
+
+    .notification-header {
+        background: linear-gradient(120deg, #102b46, #234e70);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .notification-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 25px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            right: -35px;
+            top: -55px;
+        }
+
+    .header-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 15px;
+        background: rgba(255,255,255,.13);
+        color: #e6c777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .unread-pill {
+        background: #c9a44c;
+        color: #102b46;
+        padding: 9px 17px;
+        border-radius: 30px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .summary-card {
+        background: white;
+        border: 1px solid #e9edf2;
+        border-radius: 15px;
+        padding: 20px;
+        height: 100%;
+        transition: .2s ease;
+        box-shadow: 0 4px 15px rgba(16,43,70,.04);
+    }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(16,43,70,.09);
+        }
+
+    .summary-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .icon-navy {
+        background: #eaf0f6;
+        color: #173c5c;
+    }
+
+    .icon-gold {
+        background: #fbf3df;
+        color: #a47b25;
+    }
+
+    .icon-blue {
+        background: #e8f2ff;
+        color: #2875c7;
+    }
+
+    .icon-green {
+        background: #e8f6ef;
+        color: #238456;
+    }
+
+    .summary-number {
+        font-size: 27px;
+        font-weight: 750;
+        color: #102b46;
+        margin-bottom: 0;
+    }
+
+    .summary-label {
+        color: #7b8794;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .notification-panel {
+        border: 1px solid #e8edf2;
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 5px 20px rgba(16,43,70,.05);
+    }
+
+    .panel-heading {
+        padding: 20px 23px;
+        border-bottom: 1px solid #edf0f3;
+    }
+
+        .panel-heading h5 {
+            color: #102b46;
+            font-weight: 750;
+        }
+
+    .filter-btn {
+        border-radius: 9px;
+        padding: 8px 17px;
+        font-weight: 600;
+        font-size: 13px;
+        border: 1px solid #dce3eb;
+        color: #526477;
+        background: white;
+        transition: .2s;
+    }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #102b46;
+            color: white;
+            border-color: #102b46;
+        }
+
+    .notification-item {
+        padding: 20px 23px;
+        border-bottom: 1px solid #edf0f3;
+        transition: .2s;
+    }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+        .notification-item.is-unread {
+            background: #fffdf7;
+            border-left: 4px solid #c9a44c;
+        }
+
+    .notification-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .sms-icon {
+        background: #eaf1fa;
+        color: #214d75;
+    }
+
+    .email-icon {
+        background: #e8f4f8;
+        color: #27819a;
+    }
+
+    .channel-badge {
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .sms-badge {
+        background: #eaf1fa;
+        color: #214d75;
+    }
+
+    .email-badge {
+        background: #e8f4f8;
+        color: #27819a;
+    }
+
+    .other-badge {
+        background: #edf0f3;
+        color: #596777;
+    }
+
+    .new-badge {
+        background: #fbf1d9;
+        color: #99721f;
+        border-radius: 6px;
+        padding: 5px 9px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .notification-message {
+        color: #34475a;
+        line-height: 1.6;
+        margin: 9px 0 7px;
+        overflow-wrap: anywhere;
+    }
+
+    .notification-date {
+        color: #8b98a6;
+        font-size: 12px;
+    }
+
+    .empty-state {
+        padding: 55px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 75px;
+        height: 75px;
+        border-radius: 22px;
+        margin: 0 auto 17px;
+        background: #f0f3f7;
+        color: #7890a6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+    }
+
+    .demo-note {
+        background: #f8f5ed;
+        border: 1px solid #eee3c8;
+        color: #806a3b;
+        border-radius: 10px;
+        padding: 13px 16px;
+    }
+
+    @@media (max-width: 576px) {
+        .notification-header {
+            padding: 21px;
+        }
+
+        .notification-item {
+            padding: 17px 13px;
+        }
+
+        .panel-heading {
+            padding: 17px;
+        }
+
+        .summary-card {
+            padding: 16px;
+        }
+
+        .summary-number {
+            font-size: 23px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4 notification-page">
+
+    <!-- Header -->
+    <div class="notification-header mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 position-relative"
+             style="z-index:1;">
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="header-icon">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+
+                <div>
+                    <h3 class="fw-bold mb-1">Notifications</h3>
+                    <p class="mb-0 text-white-50">
+                        Stay updated with your SmartBank account activities.
+                    </p>
+                </div>
+            </div>
+
+            <span class="unread-pill">
+                <i class="bi bi-bell me-1"></i>
+                @unread Unread
+            </span>
+
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="summary-label">Total Notifications</span>
+                    <div class="summary-icon icon-navy">
+                        <i class="bi bi-bell"></i>
+                    </div>
+                </div>
+                <h3 class="summary-number">@total</h3>
+                <small class="text-muted">All messages</small>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="summary-label">Unread</span>
+                    <div class="summary-icon icon-gold">
+                        <i class="bi bi-envelope-exclamation"></i>
+                    </div>
+                </div>
+                <h3 class="summary-number">@unread</h3>
+                <small class="text-muted">Waiting to be read</small>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="summary-label">SMS Messages</span>
+                    <div class="summary-icon icon-blue">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                </div>
+                <h3 class="summary-number">@sms</h3>
+                <small class="text-muted">SMS notifications</small>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-6">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="summary-label">Email Messages</span>
+                    <div class="summary-icon icon-green">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                </div>
+                <h3 class="summary-number">@email</h3>
+                <small class="text-muted">Email notifications</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Notification List -->
+    <div class="notification-panel">
+
+        <div class="panel-heading d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+            <div>
+                <h5 class="mb-1">
+                    <i class="bi bi-inbox me-2"></i>All Activities
+                </h5>
+                <small class="text-muted">
+                    Your recent account notifications
+                </small>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <button type="button"
+                        class="filter-btn active"
+                        data-filter="all">
+                    All
+                </button>
+
+                <button type="button"
+                        class="filter-btn"
+                        data-filter="unread">
+                    <i class="bi bi-circle-fill me-1" style="font-size:7px;"></i>
+                    Unread
+                </button>
+
+                <button type="button"
+                        class="filter-btn"
+                        data-filter="SMS">
+                    <i class="bi bi-chat-dots me-1"></i> SMS
+                </button>
+
+                <button type="button"
+                        class="filter-btn"
+                        data-filter="Email">
+                    <i class="bi bi-envelope me-1"></i> Email
+                </button>
+
+            </div>
+        </div>
+
+        <div id="notificationList">
+
+            @if (Model != null && Model.Any())
+            {
+                foreach (var n in Model.OrderByDescending(x => x.CreatedAt))
+                {
+                    <div class="notification-item @(n.IsRead ? "" : "is-unread")"
+                         data-channel="@n.Channel"
+                         data-read="@n.IsRead.ToString().ToLower()">
+
+                        <div class="d-flex align-items-start gap-3">
+
+                            <div class="notification-icon @(n.Channel == "SMS" ? "sms-icon" : "email-icon")">
+                                @if (n.Channel == "SMS")
+                                {
+                                    <i class="bi bi-chat-dots-fill"></i>
+                                }
+                                else if (n.Channel == "Email")
+                                {
+                                    <i class="bi bi-envelope-fill"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-bell-fill"></i>
+                                }
+                            </div>
+
+                            <div class="flex-grow-1">
+
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+
+                                    <span class="channel-badge @(n.Channel == "SMS" ? "sms-badge" : n.Channel == "Email" ? "email-badge" : "other-badge")">
+                                        @n.Channel
+                                    </span>
+
+                                    @if (!n.IsRead)
+                                    {
+                                        <span class="new-badge">
+                                            <i class="bi bi-stars me-1"></i>NEW
+                                        </span>
+                                    }
+
+                                </div>
+
+                                <p class="notification-message">
+                                    @n.Message
+                                </p>
+
+                                <div class="notification-date">
+                                    <i class="bi bi-clock me-1"></i>
+                                    @n.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                                </div>
+
+                            </div>
+
+                            @if (!n.IsRead)
+                            {
+                                <span class="badge rounded-pill text-bg-warning d-none d-sm-inline-block">
+                                    Unread
+                                </span>
+                            }
+
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="bi bi-bell-slash"></i>
+                    </div>
+
+                    <h5 class="fw-bold" style="color:#102b46;">
+                        No Notifications Yet
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        Your account notifications will appear here.
+                    </p>
+                </div>
+            }
+
+        </div>
+
+        <div id="noFilterResults" class="empty-state d-none">
+            <div class="empty-icon">
+                <i class="bi bi-search"></i>
+            </div>
+            <h6 class="fw-bold" style="color:#102b46;">No matching notifications</h6>
+            <p class="text-muted mb-0">
+                There are no notifications in this category.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Demo Notice -->
+    <div class="demo-note mt-3 small">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <strong>Demo Notice:</strong>
+        SMS and Email notifications are displayed here.
+        No real SMS or Email provider is connected.
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll(".filter-btn").forEach(button => {
+
+            button.addEventListener("click", function () {
+
+                const filter = this.dataset.filter;
+                let visibleCount = 0;
+
+                document.querySelectorAll(".filter-btn").forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+                this.classList.add("active");
+
+                document.querySelectorAll(".notification-item").forEach(item => {
+
+                    const channel = item.dataset.channel;
+                    const read = item.dataset.read;
+
+                    let show = false;
+
+                    if (filter === "all") {
+                        show = true;
+                    }
+                    else if (filter === "unread") {
+                        show = read === "false";
+                    }
+                    else {
+                        show = channel === filter;
+                    }
+
+                    item.style.display = show ? "" : "none";
+
+                    if (show) visibleCount++;
+                });
+
+                const noResults = document.getElementById("noFilterResults");
+
+                if (noResults) {
+                    noResults.classList.toggle("d-none", visibleCount > 0);
+                }
+            });
+
+        });
+    </script>
+}

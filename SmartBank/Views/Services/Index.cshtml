@@ -1,0 +1,691 @@
+﻿@model List<ServiceRequest>
+
+@{
+    ViewData["Title"] = "Banking Services";
+
+    var total = Model?.Count ?? 0;
+    var pending = Model?.Count(r => r.Status == "Pending") ?? 0;
+    var approved = Model?.Count(r => r.Status == "Approved") ?? 0;
+    var rejected = Model?.Count(r => r.Status == "Rejected") ?? 0;
+}
+
+<style>
+    .services-page {
+        --navy: #102b46;
+        --gold: #c9a44c;
+        color: #26384a;
+    }
+
+    .services-header {
+        background: linear-gradient(120deg, #102b46, #234e70);
+        color: white;
+        border-radius: 17px;
+        padding: 27px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .services-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 24px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            right: -40px;
+            top: -65px;
+        }
+
+    .header-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 15px;
+        background: rgba(255,255,255,.13);
+        color: #e6c777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .section-heading {
+        color: #102b46;
+        font-weight: 750;
+    }
+
+    .service-card {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 15px;
+        padding: 20px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 15px rgba(16,43,70,.04);
+        transition: .2s;
+    }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 9px 22px rgba(16,43,70,.09);
+            border-color: #d7c18b;
+        }
+
+    .service-icon {
+        width: 47px;
+        height: 47px;
+        border-radius: 13px;
+        background: #eaf0f6;
+        color: #173c5c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        margin-bottom: 15px;
+    }
+
+    .service-card h6 {
+        color: #102b46;
+        font-weight: 750;
+        margin-bottom: 7px;
+    }
+
+    .service-card p {
+        color: #84919f;
+        font-size: 12px;
+        line-height: 1.6;
+        flex-grow: 1;
+        margin-bottom: 15px;
+    }
+
+    .service-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        background: #f4f6f9;
+        color: #173c5c;
+        border: 1px solid #e3e9ef;
+        border-radius: 8px;
+        padding: 9px 12px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+        .service-link:hover {
+            background: #102b46;
+            border-color: #102b46;
+            color: white;
+        }
+
+    .summary-card {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 14px;
+        padding: 18px;
+        height: 100%;
+        box-shadow: 0 4px 15px rgba(16,43,70,.04);
+    }
+
+    .summary-label {
+        color: #84919f;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .summary-number {
+        color: #102b46;
+        font-size: 26px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .summary-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .icon-blue {
+        background: #eaf0f6;
+        color: #173c5c;
+    }
+
+    .icon-orange {
+        background: #fff4df;
+        color: #b78325;
+    }
+
+    .icon-green {
+        background: #e8f6ef;
+        color: #238456;
+    }
+
+    .icon-red {
+        background: #fff0ef;
+        color: #c54c45;
+    }
+
+    .request-panel {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(16,43,70,.05);
+    }
+
+    .request-panel-heading {
+        padding: 20px 22px;
+        border-bottom: 1px solid #edf0f3;
+    }
+
+    .request-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .request-table thead th {
+            background: #f4f6f9;
+            color: #526477;
+            font-size: 11px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            padding: 15px;
+            white-space: nowrap;
+            border-bottom: 1px solid #e8edf2;
+        }
+
+        .request-table tbody td {
+            padding: 15px;
+            font-size: 12px;
+            color: #425569;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .request-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .request-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 7px;
+        font-size: 10px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fff4df;
+        color: #a87519;
+    }
+
+    .status-approved {
+        background: #e8f6ef;
+        color: #238456;
+    }
+
+    .status-rejected {
+        background: #fff0ef;
+        color: #c54c45;
+    }
+
+    .status-other {
+        background: #eaf0f6;
+        color: #526477;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .empty-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        background: #eaf0f6;
+        color: #173c5c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 29px;
+        margin: 0 auto 15px;
+    }
+
+    @@media(max-width:576px) {
+        .services-header {
+            padding: 21px;
+        }
+
+        .request-panel-heading {
+            padding: 17px;
+        }
+
+        .request-table thead th,
+        .request-table tbody td {
+            padding: 12px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4 services-page">
+
+    <!-- Header -->
+    <div class="services-header mb-4">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 position-relative"
+             style="z-index:1;">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="header-icon">
+                    <i class="bi bi-grid-1x2"></i>
+                </div>
+
+                <div>
+                    <h3 class="fw-bold mb-1">
+                        Banking Services
+                    </h3>
+
+                    <p class="text-white-50 mb-0">
+                        Manage your banking requests and account services.
+                    </p>
+                </div>
+
+            </div>
+
+            <span class="badge rounded-pill px-3 py-2"
+                  style="background:#c9a44c;color:#102b46;">
+                <i class="bi bi-shield-check me-1"></i>
+                SmartBank Services
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Available Services -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <div>
+            <h5 class="section-heading mb-1">
+                <i class="bi bi-briefcase me-2"></i>
+                Available Services
+            </h5>
+
+            <small class="text-muted">
+                Select a service to continue.
+            </small>
+        </div>
+
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+
+                <h6>Cheque Book Request</h6>
+
+                <p>
+                    Request a new cheque book for your bank account.
+                </p>
+
+                <a class="service-link"
+                   asp-action="New"
+                   asp-route-type="Cheque Book">
+                    Request Now
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="bi bi-shield-x"></i>
+                </div>
+
+                <h6>Stop Cheque Payment</h6>
+
+                <p>
+                    Submit a request to stop a cheque payment.
+                </p>
+
+                <a class="service-link"
+                   asp-action="New"
+                   asp-route-type="Stop Cheque">
+                    Request Now
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+
+                <h6>Change Address</h6>
+
+                <p>
+                    Request an update to your registered address.
+                </p>
+
+                <a class="service-link"
+                   asp-action="New"
+                   asp-route-type="Change Address">
+                    Update Address
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="bi bi-credit-card"></i>
+                </div>
+
+                <h6>Debit Card Request</h6>
+
+                <p>
+                    Apply for a new SmartBank debit card.
+                </p>
+
+                <a class="service-link"
+                   asp-action="New"
+                   asp-route-type="Debit Card">
+                    Request Card
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="bi bi-lock"></i>
+                </div>
+
+                <h6>Card Block / Unblock</h6>
+
+                <p>
+                    Manage the status of your existing debit cards.
+                </p>
+
+                <a class="service-link" asp-action="Cards">
+                    Manage Cards
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="bi bi-person-gear"></i>
+                </div>
+
+                <h6>Account Maintenance</h6>
+
+                <p>
+                    Submit account maintenance related requests.
+                </p>
+
+                <a class="service-link"
+                   asp-action="New"
+                   asp-route-type="Account Maintenance">
+                    Request Now
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-4 col-sm-6">
+            <div class="service-card">
+
+                <div class="service-icon">
+                    <i class="bi bi-file-earmark-check"></i>
+                </div>
+
+                <h6>Transaction Certificate</h6>
+
+                <p>
+                    Generate a certificate for your account activity.
+                </p>
+
+                <a class="service-link" asp-action="Certificate">
+                    Generate
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Request Summary -->
+    <h5 class="section-heading mb-3">
+        <i class="bi bi-clipboard-data me-2"></i>
+        My Request Summary
+    </h5>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-3 col-6">
+            <div class="summary-card">
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="summary-label">Total Requests</span>
+
+                    <div class="summary-icon icon-blue">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+                </div>
+
+                <h3 class="summary-number">@total</h3>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-6">
+            <div class="summary-card">
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="summary-label">Pending</span>
+
+                    <div class="summary-icon icon-orange">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+
+                <h3 class="summary-number">@pending</h3>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-6">
+            <div class="summary-card">
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="summary-label">Approved</span>
+
+                    <div class="summary-icon icon-green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+
+                <h3 class="summary-number">@approved</h3>
+
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-6">
+            <div class="summary-card">
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="summary-label">Rejected</span>
+
+                    <div class="summary-icon icon-red">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+                </div>
+
+                <h3 class="summary-number">@rejected</h3>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- My Requests -->
+    <div class="request-panel">
+
+        <div class="request-panel-heading d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+            <div>
+                <h5 class="section-heading mb-1">
+                    <i class="bi bi-clock-history me-2"></i>
+                    My Requests
+                </h5>
+
+                <small class="text-muted">
+                    Track your banking service requests.
+                </small>
+            </div>
+
+            <span class="badge rounded-pill px-3 py-2"
+                  style="background:#eaf0f6;color:#173c5c;">
+                @total Records
+            </span>
+
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+
+                <table class="table request-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Account</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                            <th>Bank Remarks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+
+                                <td class="text-nowrap">
+                                    <i class="bi bi-calendar3 me-1"
+                                       style="color:#c9a44c;"></i>
+
+                                    @r.CreatedAt.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td>
+                                    <span class="fw-bold" style="color:#102b46;">
+                                        @r.Type
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="text-nowrap">
+                                        @(r.Account?.AccountNumber ?? "-")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @r.Details
+                                </td>
+
+                                <td>
+                                    @{
+                                        var statusClass = r.Status switch
+                                        {
+                                            "Pending" => "status-pending",
+                                            "Approved" => "status-approved",
+                                            "Rejected" => "status-rejected",
+                                            _ => "status-other"
+                                        };
+                                    }
+
+                                    <span class="status-badge @statusClass">
+                                        @r.Status
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(r.AdminRemarks)
+                                        ? "-"
+                                        : r.AdminRemarks)
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    <i class="bi bi-inbox"></i>
+                </div>
+
+                <h5 class="fw-bold" style="color:#102b46;">
+                    No Requests Yet
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Your banking service requests will appear here.
+                </p>
+
+            </div>
+        }
+
+    </div>
+
+</div>

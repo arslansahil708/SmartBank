@@ -1,0 +1,659 @@
+﻿@model SmartBank.ViewModels.ReportViewModel
+
+@{
+    ViewData["Title"] = "Bank Reports";
+}
+
+<style>
+    .reports-page {
+        padding: 25px 10px;
+    }
+
+    .reports-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 30px;
+        border-radius: 17px;
+        border-bottom: 4px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .reports-header h3 {
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .reports-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .filter-card {
+        background: white;
+        border: 1px solid #e0e8f8;
+        border-radius: 15px;
+        padding: 22px;
+        margin-bottom: 22px;
+        box-shadow: 0 5px 18px rgba(8, 35, 75, 0.05);
+    }
+
+    .filter-title {
+        color: #09244d;
+        font-weight: 750;
+        margin-bottom: 18px;
+    }
+
+    .filter-card .form-label {
+        color: #52647c;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .filter-card .form-control {
+        border: 1px solid #dce4f0;
+        border-radius: 9px;
+        padding: 10px 12px;
+    }
+
+        .filter-card .form-control:focus {
+            border-color: #1451a0;
+            box-shadow: 0 0 0 3px rgba(20, 81, 160, 0.1);
+        }
+
+    .btn-generate {
+        background: #092f66;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 10px 20px;
+        font-weight: 650;
+    }
+
+        .btn-generate:hover {
+            background: #1451a0;
+            color: white;
+        }
+
+    .btn-print {
+        border: 1px solid #d6a32e;
+        color: #9b741b;
+        background: #fff;
+        border-radius: 9px;
+        padding: 10px 20px;
+        font-weight: 650;
+    }
+
+        .btn-print:hover {
+            background: #fff5d9;
+            color: #79570e;
+        }
+
+    .period-label {
+        background: #eaf1ff;
+        color: #1451a0;
+        border-radius: 9px;
+        padding: 12px 16px;
+        font-size: 13px;
+        font-weight: 650;
+        margin-bottom: 22px;
+    }
+
+    .report-card {
+        background: white;
+        border: 1px solid #e0e8f8;
+        border-radius: 15px;
+        padding: 21px;
+        height: 100%;
+        box-shadow: 0 5px 18px rgba(8, 35, 75, 0.05);
+        transition: 0.25s;
+    }
+
+        .report-card:hover {
+            transform: translateY(-4px);
+            border-color: #d6a32e;
+            box-shadow: 0 10px 24px rgba(8, 35, 75, 0.09);
+        }
+
+    .report-card-label {
+        color: #718096;
+        font-size: 13px;
+        font-weight: 650;
+        margin-bottom: 14px;
+    }
+
+    .report-card-value {
+        color: #09244d;
+        font-size: 26px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .report-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 22px;
+    }
+
+    .report-blue {
+        background: #e9f0ff;
+        color: #1451a0;
+    }
+
+    .report-green {
+        background: #e1f8eb;
+        color: #087b46;
+    }
+
+    .report-gold {
+        background: #fff5d9;
+        color: #bd8b1c;
+    }
+
+    .report-red {
+        background: #ffe8e8;
+        color: #dc3545;
+    }
+
+    .report-purple {
+        background: #f0eaff;
+        color: #7043b5;
+    }
+
+    .summary-card {
+        background: white;
+        border: 1px solid #e0e8f8;
+        border-radius: 15px;
+        padding: 23px;
+        margin-top: 25px;
+        box-shadow: 0 5px 18px rgba(8, 35, 75, 0.05);
+    }
+
+    .summary-title {
+        color: #09244d;
+        font-weight: 750;
+        margin-bottom: 20px;
+    }
+
+    .report-table {
+        margin-bottom: 0;
+    }
+
+        .report-table th {
+            color: #09244d;
+            font-weight: 650;
+            background: #f1f5ff;
+            padding: 14px;
+            width: 65%;
+        }
+
+        .report-table td {
+            color: #394b64;
+            font-weight: 650;
+            padding: 14px;
+            text-align: right;
+        }
+
+        .report-table tr {
+            border-bottom: 1px solid #edf1f7;
+        }
+
+    .report-footer {
+        margin-top: 22px;
+        padding: 16px;
+        color: #718096;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    @@media (max-width: 768px) {
+        .reports-header {
+            padding: 22px;
+        }
+
+        .report-card-value {
+            font-size: 23px;
+        }
+
+        .report-table th,
+        .report-table td {
+            font-size: 12px;
+            padding: 11px 8px;
+        }
+    }
+
+    @@media print {
+        body {
+            background: white !important;
+        }
+
+        .no-print,
+        nav,
+        footer,
+        .sidebar {
+            display: none !important;
+        }
+
+        .reports-page {
+            padding: 0;
+            margin: 0;
+        }
+
+        .reports-header {
+            background: white !important;
+            color: #09244d !important;
+            border: 2px solid #09244d;
+            box-shadow: none;
+        }
+
+            .reports-header p {
+                color: #444 !important;
+            }
+
+        .report-card,
+        .summary-card {
+            box-shadow: none;
+            border: 1px solid #bbb;
+            break-inside: avoid;
+        }
+
+            .report-card:hover {
+                transform: none;
+            }
+
+        .period-label {
+            background: white !important;
+            border: 1px solid #bbb;
+            color: #09244d !important;
+        }
+
+        .report-table th {
+            background: #eee !important;
+            color: black !important;
+        }
+
+        .report-table td {
+            color: black !important;
+        }
+
+        .reports-header,
+        .report-card,
+        .report-table th {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+    }
+</style>
+
+<div class="container-fluid reports-page">
+
+    <!-- Header -->
+    <div class="reports-header">
+
+        <div class="d-flex align-items-center gap-3">
+
+            <i class="bi bi-bar-chart-line-fill fs-1 text-warning"></i>
+
+            <div>
+                <h3>Bank Reports</h3>
+
+                <p>
+                    <i class="bi bi-shield-check me-1"></i>
+                    SmartBank Financial Reports & Statistics
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Date Filter -->
+    <div class="filter-card no-print">
+
+        <h5 class="filter-title">
+            <i class="bi bi-calendar-range text-warning me-2"></i>
+            Generate Report
+        </h5>
+
+        <form method="get" class="row g-3 align-items-end">
+
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    <i class="bi bi-calendar-event me-1"></i>
+                    From Date
+                </label>
+
+                <input type="date"
+                       name="fromDate"
+                       class="form-control"
+                       value="@Model.FromDate.ToString("yyyy-MM-dd")" />
+
+            </div>
+
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    <i class="bi bi-calendar-check me-1"></i>
+                    To Date
+                </label>
+
+                <input type="date"
+                       name="toDate"
+                       class="form-control"
+                       value="@Model.ToDate.ToString("yyyy-MM-dd")" />
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit" class="btn btn-generate">
+                        <i class="bi bi-search me-1"></i>
+                        Generate
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-print"
+                            onclick="window.print()">
+
+                        <i class="bi bi-printer me-1"></i>
+                        Print
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Report Period -->
+    <div class="period-label">
+
+        <i class="bi bi-calendar3 me-2"></i>
+
+        Report Period:
+
+        @Model.FromDate.ToString("dd MMM yyyy")
+
+        <i class="bi bi-arrow-right mx-2"></i>
+
+        @Model.ToDate.ToString("dd MMM yyyy")
+
+    </div>
+
+    <!-- Report Statistics -->
+    <h5 class="summary-title">
+        <i class="bi bi-grid-fill text-warning me-2"></i>
+        Financial Overview
+    </h5>
+
+    <div class="row g-3">
+
+        <!-- Customers -->
+        <div class="col-sm-6 col-lg-4">
+
+            <div class="report-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="report-card-label">
+                        New Customers
+                    </div>
+
+                    <div class="report-icon report-blue">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                </div>
+
+                <div class="report-card-value">
+                    @Model.NewCustomers
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Accounts -->
+        <div class="col-sm-6 col-lg-4">
+
+            <div class="report-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="report-card-label">
+                        New Accounts
+                    </div>
+
+                    <div class="report-icon report-green">
+                        <i class="bi bi-bank"></i>
+                    </div>
+
+                </div>
+
+                <div class="report-card-value">
+                    @Model.NewAccounts
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Transactions -->
+        <div class="col-sm-6 col-lg-4">
+
+            <div class="report-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="report-card-label">
+                        Total Transactions
+                    </div>
+
+                    <div class="report-icon report-purple">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+
+                </div>
+
+                <div class="report-card-value">
+                    @Model.TransactionCount
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Debit -->
+        <div class="col-sm-6 col-lg-4">
+
+            <div class="report-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="report-card-label">
+                        Total Debit
+                    </div>
+
+                    <div class="report-icon report-red">
+                        <i class="bi bi-arrow-up-circle"></i>
+                    </div>
+
+                </div>
+
+                <div class="report-card-value">
+                    Rs @Model.TotalDebit.ToString("N2")
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Credit -->
+        <div class="col-sm-6 col-lg-4">
+
+            <div class="report-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="report-card-label">
+                        Total Credit
+                    </div>
+
+                    <div class="report-icon report-green">
+                        <i class="bi bi-arrow-down-circle"></i>
+                    </div>
+
+                </div>
+
+                <div class="report-card-value">
+                    Rs @Model.TotalCredit.ToString("N2")
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Loans -->
+        <div class="col-sm-6 col-lg-4">
+
+            <div class="report-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="report-card-label">
+                        Loans Approved
+                    </div>
+
+                    <div class="report-icon report-gold">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+
+                </div>
+
+                <div class="report-card-value">
+                    @Model.LoansApproved
+                </div>
+
+                <div class="small text-muted mt-2">
+                    Amount: Rs @Model.LoansAmount.ToString("N2")
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Detailed Summary -->
+    <div class="summary-card">
+
+        <h5 class="summary-title">
+            <i class="bi bi-file-earmark-bar-graph text-warning me-2"></i>
+            Detailed Report Summary
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table report-table">
+
+                <tbody>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-person-plus text-primary me-2"></i>
+                            New Customers
+                        </th>
+                        <td>@Model.NewCustomers</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-bank text-primary me-2"></i>
+                            New Accounts
+                        </th>
+                        <td>@Model.NewAccounts</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-arrow-left-right text-primary me-2"></i>
+                            Transactions
+                        </th>
+                        <td>@Model.TransactionCount</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-arrow-up-circle text-danger me-2"></i>
+                            Total Debit
+                        </th>
+                        <td>Rs @Model.TotalDebit.ToString("N2")</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-arrow-down-circle text-success me-2"></i>
+                            Total Credit
+                        </th>
+                        <td>Rs @Model.TotalCredit.ToString("N2")</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-cash-stack text-warning me-2"></i>
+                            Loans Approved
+                        </th>
+                        <td>@Model.LoansApproved</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-wallet2 text-warning me-2"></i>
+                            Approved Loan Amount
+                        </th>
+                        <td>Rs @Model.LoansAmount.ToString("N2")</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-clipboard-check text-primary me-2"></i>
+                            Service Requests Processed
+                        </th>
+                        <td>@Model.RequestsProcessed</td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i class="bi bi-piggy-bank text-success me-2"></i>
+                            Total Deposits Today (All Accounts)
+                        </th>
+                        <td>Rs @Model.TotalDeposits.ToString("N2")</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="report-footer">
+
+        <i class="bi bi-shield-lock-fill text-primary me-1"></i>
+
+        SmartBank | Confidential Banking Report
+
+    </div>
+
+</div>

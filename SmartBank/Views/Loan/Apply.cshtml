@@ -1,0 +1,382 @@
+﻿@model SmartBank.ViewModels.LoanApplyViewModel
+
+@{
+    ViewData["Title"] = Model.LoanType + " Loan";
+    decimal rate = (decimal)ViewBag.Rate;
+
+    string loanIcon = Model.LoanType switch
+    {
+        "Car" => "bi-car-front",
+        "Home" => "bi-house-door",
+        "Business" => "bi-briefcase",
+        _ => "bi-person"
+    };
+}
+
+<style>
+    .apply-page {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    .apply-header {
+        background: linear-gradient(135deg, #101f3d, #203c68);
+        color: white;
+        border-radius: 16px;
+        padding: 28px;
+    }
+
+    .apply-card {
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(16, 31, 61, .05);
+    }
+
+    .apply-icon {
+        width: 52px;
+        height: 52px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5edda;
+        color: #a47b25;
+        border-radius: 14px;
+        font-size: 25px;
+    }
+
+    .section-title {
+        color: #172b4d;
+        font-weight: 700;
+    }
+
+    .form-label {
+        color: #263b5b;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 46px;
+        border-radius: 9px;
+        border-color: #dce2eb;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #c49a3a;
+            box-shadow: 0 0 0 .2rem rgba(196, 154, 58, .15);
+        }
+
+    .rate-box {
+        background: #f8f9fc;
+        border: 1px solid #e8edf4;
+        border-radius: 12px;
+        padding: 16px;
+    }
+
+    .rate-value {
+        color: #172b4d;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .emi-box {
+        background: #f8f9fc;
+        border: 1px solid #e8edf4;
+        border-left: 4px solid #c49a3a;
+        border-radius: 10px;
+        padding: 17px;
+        color: #263b5b;
+    }
+
+    .emi-value {
+        color: #172b4d;
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .btn-gold {
+        background: #c49a3a;
+        color: #101f3d;
+        border: none;
+        font-weight: 700;
+        padding: 11px 22px;
+        border-radius: 9px;
+    }
+
+        .btn-gold:hover {
+            background: #ad852c;
+            color: white;
+        }
+
+    @@media (max-width: 576px) {
+        .apply-header {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="apply-page">
+
+    <!-- Header -->
+    <div class="apply-header mb-4">
+        <div class="d-flex align-items-center gap-3">
+
+            <div class="apply-icon">
+                <i class="bi @loanIcon"></i>
+            </div>
+
+            <div>
+                <div class="small text-white-50 mb-1">
+                    SmartBank / Loan Application
+                </div>
+
+                <h3 class="fw-bold mb-1">
+                    @Model.LoanType Loan Application
+                </h3>
+
+                <p class="text-white-50 mb-0">
+                    Complete the form to submit your financing request.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Interest Rate -->
+    <div class="rate-box mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+            <div>
+                <div class="text-muted small mb-1">
+                    Annual Interest Rate
+                </div>
+
+                <div class="rate-value">
+                    @rate.ToString("0.##")%
+                </div>
+
+                <small class="text-muted">
+                    Demo interest rate per year
+                </small>
+            </div>
+
+            <div class="apply-icon">
+                <i class="bi bi-percent"></i>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Form -->
+    <div class="apply-card p-4 mb-4">
+
+        <h5 class="section-title mb-2">
+            <i class="bi bi-file-earmark-text me-2 text-warning"></i>
+            Application Details
+        </h5>
+
+        <p class="text-muted small mb-4">
+            Enter your loan details carefully before submitting.
+        </p>
+
+        <form asp-action="Apply" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="LoanType" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger"
+                 role="alert">
+            </div>
+
+            <!-- Account -->
+            <div class="mb-4">
+
+                <label asp-for="AccountId" class="form-label">
+                    <i class="bi bi-bank me-1 text-warning"></i>
+                    Select Bank Account
+                </label>
+
+                <select asp-for="AccountId"
+                        asp-items="@((SelectList)ViewBag.Accounts)"
+                        class="form-select">
+
+                    <option value="">-- Select account --</option>
+
+                </select>
+
+                <span asp-validation-for="AccountId"
+                      class="text-danger small">
+                </span>
+
+            </div>
+
+            <!-- Amount -->
+            <div class="mb-4">
+
+                <label asp-for="Amount" class="form-label">
+                    <i class="bi bi-cash-stack me-1 text-warning"></i>
+                    Loan Amount (Rs)
+                </label>
+
+                <input asp-for="Amount"
+                       type="number"
+                       step="0.01"
+                       min="1"
+                       class="form-control"
+                       id="amount"
+                       placeholder="Enter loan amount" />
+
+                <span asp-validation-for="Amount"
+                      class="text-danger small">
+                </span>
+
+            </div>
+
+            <!-- Months -->
+            <div class="mb-4">
+
+                <label asp-for="Months" class="form-label">
+                    <i class="bi bi-calendar-month me-1 text-warning"></i>
+                    Repayment Period (Months)
+                </label>
+
+                <input asp-for="Months"
+                       type="number"
+                       min="1"
+                       class="form-control"
+                       id="months"
+                       placeholder="Enter number of months" />
+
+                <span asp-validation-for="Months"
+                      class="text-danger small">
+                </span>
+
+            </div>
+
+            <!-- EMI Estimate -->
+            <div class="emi-box mb-4" id="emiBox" aria-live="polite">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <div>
+                        <div class="small text-muted mb-1">
+                            Estimated Monthly Installment
+                        </div>
+
+                        <div class="emi-value" id="emiValue">
+                            Rs 0.00
+                        </div>
+                    </div>
+
+                    <i class="bi bi-calculator fs-2 text-warning"></i>
+
+                </div>
+
+                <small class="text-muted" id="emiNote">
+                    Enter amount and months to calculate your estimated installment.
+                </small>
+
+            </div>
+
+            <!-- Purpose -->
+            <div class="mb-4">
+
+                <label asp-for="Purpose" class="form-label">
+                    <i class="bi bi-chat-left-text me-1 text-warning"></i>
+                    Loan Purpose
+                </label>
+
+                <textarea asp-for="Purpose"
+                          class="form-control"
+                          rows="3"
+                          placeholder="Explain why you need this loan"></textarea>
+
+                <span asp-validation-for="Purpose"
+                      class="text-danger small">
+                </span>
+
+            </div>
+
+            <!-- Information -->
+            <div class="alert alert-light border small">
+                <i class="bi bi-info-circle text-primary me-2"></i>
+                Your application will be submitted for bank review. The displayed installment is an estimate.
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex flex-wrap gap-2">
+
+                <button type="submit" class="btn btn-gold flex-grow-1">
+                    <i class="bi bi-send me-2"></i>
+                    Submit Application
+                </button>
+
+                <a class="btn btn-outline-secondary"
+                   asp-action="Index">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const rate = @rate.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        function showEmi() {
+
+            const amount = parseFloat($("#amount").val());
+            const months = parseInt($("#months").val());
+
+            if (!(amount > 0) || !(months > 0)) {
+                $("#emiValue").text("Rs 0.00");
+                $("#emiNote").text(
+                    "Enter amount and months to calculate your estimated installment."
+                );
+                return;
+            }
+
+            const monthlyRate = rate / 12 / 100;
+
+            let emi;
+
+            if (monthlyRate === 0) {
+                emi = amount / months;
+            }
+            else {
+                emi = amount * monthlyRate *
+                    Math.pow(1 + monthlyRate, months) /
+                    (Math.pow(1 + monthlyRate, months) - 1);
+            }
+
+            $("#emiValue").text(
+                "Rs " + emi.toLocaleString("en-PK", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })
+            );
+
+            $("#emiNote").text(
+                "Estimated installment for " + months + " months. Final amount is calculated by the bank."
+            );
+        }
+
+        $("#amount, #months").on("input", showEmi);
+
+        showEmi();
+    </script>
+}

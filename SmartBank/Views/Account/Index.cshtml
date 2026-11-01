@@ -1,0 +1,373 @@
+﻿@model List<SmartBank.Models.Account>
+
+@{
+    ViewData["Title"] = "My Accounts";
+    var totalBalance = Model.Sum(a => a.Balance);
+    var activeAccounts = Model.Count(a => a.IsActive);
+}
+
+<style>
+    .accounts-page {
+        min-height: 85vh;
+        padding: 40px 15px;
+        background: linear-gradient(135deg, #eaf2ff, #f8fbff);
+    }
+
+    .accounts-container {
+        max-width: 1150px;
+        margin: auto;
+    }
+
+    .accounts-header {
+        background: linear-gradient(135deg, #06264f, #104b83);
+        padding: 30px;
+        border-radius: 18px;
+        color: white;
+        margin-bottom: 25px;
+    }
+
+        .accounts-header h2 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .accounts-header p {
+            color: #dce9f8;
+            margin: 0;
+        }
+
+    .open-btn {
+        background: #f5bd42;
+        color: #082b57;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 9px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
+
+        .open-btn:hover {
+            background: #e2a923;
+            color: #082b57;
+            transform: translateY(-2px);
+        }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 23px;
+        box-shadow: 0 8px 25px rgba(10, 35, 75, 0.08);
+        margin-bottom: 25px;
+        border-left: 5px solid #e9b83e;
+    }
+
+        .summary-card small {
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .summary-card h3 {
+            color: #082b57;
+            font-size: 27px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+    .account-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e5ebf3;
+        overflow: hidden;
+        height: 100%;
+        box-shadow: 0 8px 25px rgba(10, 35, 75, 0.08);
+        transition: 0.3s;
+    }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(10, 35, 75, 0.14);
+        }
+
+    .account-card-header {
+        background: linear-gradient(135deg, #082b57, #15558e);
+        color: white;
+        padding: 20px;
+    }
+
+        .account-card-header h5 {
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .account-card-header i {
+            color: #f5bd42;
+            font-size: 25px;
+        }
+
+    .account-card-body {
+        padding: 22px;
+    }
+
+    .account-number {
+        color: #718096;
+        font-size: 14px;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+
+    .account-balance {
+        color: #082b57;
+        font-size: 27px;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .status-active {
+        background: #e1f7e9;
+        color: #168044;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-suspended {
+        background: #fde8e8;
+        color: #c53030;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .account-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 18px;
+    }
+
+        .account-actions a {
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+    .empty-state {
+        background: white;
+        text-align: center;
+        padding: 55px 20px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(10, 35, 75, 0.08);
+    }
+
+        .empty-state i {
+            font-size: 55px;
+            color: #e9b83e;
+        }
+
+        .empty-state h4 {
+            color: #082b57;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+    @@media (max-width: 576px) {
+        .accounts-header {
+            padding: 22px;
+        }
+
+            .accounts-header .header-content {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 18px;
+            }
+
+        .account-actions a {
+            flex: 1 1 40%;
+        }
+    }
+</style>
+
+<div class="accounts-page">
+
+    <div class="accounts-container">
+
+        <!-- Header -->
+        <div class="accounts-header">
+
+            <div class="d-flex justify-content-between align-items-center header-content">
+
+                <div>
+                    <h2>
+                        <i class="bi bi-bank2 me-2"></i>
+                        My Accounts
+                    </h2>
+
+                    <p>Manage your SmartBank accounts in one place.</p>
+                </div>
+
+                <a asp-action="Open" class="open-btn">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Open New Account
+                </a>
+
+            </div>
+
+        </div>
+
+        @if (!Model.Any())
+        {
+            <!-- Empty State -->
+            <div class="empty-state">
+
+                <i class="bi bi-wallet2"></i>
+
+                <h4>No Accounts Found</h4>
+
+                <p class="text-muted">
+                    You have no accounts yet. Open your first
+                    SmartBank account to get started.
+                </p>
+
+                <a asp-action="Open" class="open-btn mt-3">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Open Your Account
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <!-- Summary -->
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="summary-card">
+
+                        <small>
+                            <i class="bi bi-wallet2 me-2"></i>
+                            Total Account Balance
+                        </small>
+
+                        <h3>
+                            Rs @totalBalance.ToString("N2")
+                        </h3>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="summary-card">
+
+                        <small>
+                            <i class="bi bi-bank me-2"></i>
+                            Active Accounts
+                        </small>
+
+                        <h3>@activeAccounts / @Model.Count</h3>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Account Cards -->
+            <div class="row">
+
+                @foreach (var a in Model)
+                {
+                    <div class="col-lg-6 col-md-6 mb-4">
+
+                        <div class="account-card">
+
+                            <div class="account-card-header">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <h5>
+                                        <i class="bi bi-credit-card me-2"></i>
+                                        @a.AccountType Account
+                                    </h5>
+
+                                    <i class="bi bi-bank2"></i>
+
+                                </div>
+
+                            </div>
+
+                            <div class="account-card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <span class="account-number">
+                                        Account Number
+                                    </span>
+
+                                    @if (a.IsActive)
+                                    {
+                                        <span class="status-active">
+                                            <i class="bi bi-check-circle-fill me-1"></i>
+                                            Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-suspended">
+                                            <i class="bi bi-x-circle-fill me-1"></i>
+                                            Suspended
+                                        </span>
+                                    }
+
+                                </div>
+
+                                <div class="account-number">
+                                    @a.AccountNumber
+                                </div>
+
+                                <div class="account-balance">
+                                    Rs @a.Balance.ToString("N2")
+                                </div>
+
+                                <hr />
+
+                                <div class="account-actions">
+
+                                    <a asp-action="MiniStatement"
+                                       asp-route-id="@a.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-clock-history me-1"></i>
+                                        Mini Statement
+                                    </a>
+
+                                    <a asp-action="Statement"
+                                       asp-route-id="@a.Id"
+                                       class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-file-earmark-text me-1"></i>
+                                        Statement
+                                    </a>
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@a.Id"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Details
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>

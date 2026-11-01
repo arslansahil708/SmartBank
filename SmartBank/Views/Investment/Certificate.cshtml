@@ -1,0 +1,507 @@
+﻿@model TermDeposit
+
+@{
+    ViewData["Title"] = "Savings Certificate";
+}
+
+<style>
+    .certificate-page {
+        padding: 35px 12px;
+    }
+
+    .certificate-card {
+        background: white;
+        border: 2px solid #d6a32e;
+        border-radius: 16px;
+        padding: 45px;
+        position: relative;
+        box-shadow: 0 10px 35px rgba(8, 35, 75, 0.09);
+        overflow: hidden;
+    }
+
+        .certificate-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 9px;
+            background: linear-gradient(90deg, #061d43, #d6a32e, #061d43);
+        }
+
+    .certificate-header {
+        text-align: center;
+        padding-bottom: 25px;
+        border-bottom: 2px solid #e5ebf5;
+        margin-bottom: 25px;
+    }
+
+    .bank-logo {
+        width: 65px;
+        height: 65px;
+        background: linear-gradient(135deg, #061d43, #1451a0);
+        color: #f3c65e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 17px;
+        font-size: 32px;
+        margin: 0 auto 12px;
+    }
+
+    .bank-name {
+        color: #09244d;
+        font-size: 30px;
+        font-weight: 850;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .certificate-subtitle {
+        color: #bd8b1c;
+        font-size: 17px;
+        font-weight: 750;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .certificate-number {
+        display: inline-block;
+        background: #f1f5ff;
+        color: #1451a0;
+        border: 1px solid #dce7f8;
+        border-radius: 8px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 750;
+        margin-top: 15px;
+    }
+
+    .certificate-description {
+        color: #394b64;
+        font-size: 15px;
+        line-height: 2;
+        margin-bottom: 28px;
+        text-align: justify;
+    }
+
+        .certificate-description strong {
+            color: #09244d;
+        }
+
+    .details-heading {
+        color: #09244d;
+        font-weight: 750;
+        margin-bottom: 15px;
+    }
+
+    .certificate-table {
+        border: 1px solid #dce4f0;
+        margin-bottom: 25px;
+    }
+
+        .certificate-table th {
+            background: #f1f5ff;
+            color: #09244d;
+            font-weight: 650;
+            padding: 14px;
+            width: 42%;
+        }
+
+        .certificate-table td {
+            color: #394b64;
+            font-weight: 600;
+            padding: 14px;
+        }
+
+    .maturity-row th,
+    .maturity-row td {
+        background: #fff5d9 !important;
+        color: #09244d;
+        font-weight: 800;
+        font-size: 15px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        background: #d9f5e5;
+        color: #087b46;
+        border-radius: 20px;
+        padding: 6px 13px;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .certificate-note {
+        background: #f8f9fc;
+        border-left: 4px solid #d6a32e;
+        border-radius: 7px;
+        padding: 14px 17px;
+        color: #718096;
+        font-size: 12px;
+        line-height: 1.7;
+        margin-top: 25px;
+    }
+
+    .certificate-footer {
+        border-top: 1px solid #e5ebf5;
+        padding-top: 25px;
+        margin-top: 30px;
+    }
+
+    .signature-line {
+        border-top: 1px solid #09244d;
+        padding-top: 9px;
+        color: #52647c;
+        font-size: 12px;
+        text-align: center;
+        max-width: 190px;
+        margin-left: auto;
+    }
+
+    .certificate-actions {
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-certificate-print {
+        background: #092f66;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 10px 20px;
+        font-weight: 700;
+    }
+
+        .btn-certificate-print:hover {
+            background: #1451a0;
+            color: white;
+        }
+
+    .btn-certificate-back {
+        border: 1px solid #d6a32e;
+        color: #946c00;
+        border-radius: 9px;
+        padding: 10px 20px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .btn-certificate-back:hover {
+            background: #fff5d9;
+            color: #79570e;
+        }
+
+    @@media (max-width: 576px) {
+        .certificate-card {
+            padding: 25px 16px;
+        }
+
+        .bank-name {
+            font-size: 25px;
+        }
+
+        .certificate-table th,
+        .certificate-table td {
+            padding: 10px 8px;
+            font-size: 12px;
+        }
+    }
+
+    @@media print {
+        @@page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        body {
+            background: white !important;
+        }
+
+        .no-print,
+        nav,
+        footer,
+        .sidebar {
+            display: none !important;
+        }
+
+        .certificate-page {
+            padding: 0;
+            margin: 0;
+        }
+
+        .certificate-card {
+            box-shadow: none;
+            border: 2px solid #d6a32e;
+            padding: 30px;
+        }
+
+        .certificate-card,
+        .certificate-table th,
+        .maturity-row th,
+        .maturity-row td {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+    }
+</style>
+
+<div class="container certificate-page">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+            <div class="certificate-card">
+
+                <!-- Certificate Header -->
+                <div class="certificate-header">
+
+                    <div class="bank-logo">
+                        <i class="bi bi-bank2"></i>
+                    </div>
+
+                    <div class="bank-name">
+                        SmartBank
+                    </div>
+
+                    <div class="certificate-subtitle">
+                        Savings Certificate
+                    </div>
+
+                    <div class="certificate-number">
+                        <i class="bi bi-patch-check-fill me-1"></i>
+                        Certificate No: SC-@Model.Id.ToString("D6")
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <p class="certificate-description">
+
+                    This certificate is issued to
+
+                    <strong>@Model.Customer!.FullName</strong>
+
+                    for a term deposit of
+
+                    <strong>Rs @Model.Amount.ToString("N2")</strong>
+
+                    held for
+
+                    <strong>@Model.Months months</strong>
+
+                    at an annual profit rate of
+
+                    <strong>@Model.ProfitRate.ToString("0.##")%</strong>.
+
+                </p>
+
+                <!-- Deposit Details -->
+                <h5 class="details-heading">
+                    <i class="bi bi-file-earmark-text text-warning me-2"></i>
+                    Certificate Details
+                </h5>
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered certificate-table">
+
+                        <tbody>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-hash me-2 text-primary"></i>
+                                    Certificate No
+                                </th>
+
+                                <td>
+                                    SC-@Model.Id.ToString("D6")
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-person me-2 text-primary"></i>
+                                    Customer Name
+                                </th>
+
+                                <td>
+                                    @Model.Customer!.FullName
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-bank me-2 text-primary"></i>
+                                    Account Number
+                                </th>
+
+                                <td>
+                                    @Model.Account!.AccountNumber
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-cash-stack me-2 text-primary"></i>
+                                    Deposit Amount
+                                </th>
+
+                                <td>
+                                    Rs @Model.Amount.ToString("N2")
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-calendar-range me-2 text-primary"></i>
+                                    Deposit Period
+                                </th>
+
+                                <td>
+                                    @Model.Months Months
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-percent me-2 text-primary"></i>
+                                    Annual Profit Rate
+                                </th>
+
+                                <td>
+                                    @Model.ProfitRate.ToString("0.##")%
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-calendar-check me-2 text-primary"></i>
+                                    Start Date
+                                </th>
+
+                                <td>
+                                    @Model.StartDate.ToString("dd MMM yyyy")
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-calendar-event me-2 text-primary"></i>
+                                    Maturity Date
+                                </th>
+
+                                <td>
+                                    @Model.MaturityDate.ToString("dd MMM yyyy")
+                                </td>
+                            </tr>
+
+                            <tr class="maturity-row">
+                                <th>
+                                    <i class="bi bi-wallet2 me-2"></i>
+                                    Amount at Maturity
+                                </th>
+
+                                <td>
+                                    Rs @Model.MaturityAmount.ToString("N2")
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <i class="bi bi-info-circle me-2 text-primary"></i>
+                                    Deposit Status
+                                </th>
+
+                                <td>
+                                    <span class="status-badge">
+                                        @Model.Status
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="certificate-note">
+
+                    <strong>
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        Important Notice
+                    </strong>
+
+                    <p class="mb-0 mt-1">
+                        Practice project: This certificate is generated
+                        for demonstration and educational purposes only.
+                        It is not a legal banking document or a guarantee
+                        of actual profit payment.
+                    </p>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="certificate-footer">
+
+                    <div class="row align-items-end">
+
+                        <div class="col-7">
+
+                            <div class="small text-muted">
+                                SmartBank Online Banking System
+                            </div>
+
+                            <div class="small text-muted mt-1">
+                                Savings & Investment Department
+                            </div>
+
+                        </div>
+
+                        <div class="col-5">
+
+                            <div class="signature-line">
+                                Authorized Signature
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                <div class="certificate-actions no-print">
+
+                    <button type="button"
+                            class="btn btn-certificate-print"
+                            onclick="window.print()">
+
+                        <i class="bi bi-printer me-2"></i>
+                        Print Certificate
+
+                    </button>
+
+                    <a class="btn-certificate-back"
+                       asp-action="Deposits">
+
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Back to Deposits
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

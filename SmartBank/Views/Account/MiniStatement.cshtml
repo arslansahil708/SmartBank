@@ -1,0 +1,283 @@
+﻿@model StatementViewModel
+
+@{
+    ViewData["Title"] = "Mini Statement";
+}
+
+<style>
+    body {
+        background: #f1f5ff;
+    }
+
+    .statement-container {
+        max-width: 1150px;
+        margin: 35px auto;
+        padding: 15px;
+    }
+
+    .statement-card {
+        background: #fff;
+        border-radius: 22px;
+        padding: 30px;
+        box-shadow: 0 8px 30px rgba(8, 35, 75, 0.10);
+        border: 1px solid #e0e8f8;
+    }
+
+    .statement-banner {
+        background: linear-gradient(120deg, #061d43, #064b91);
+        color: white;
+        padding: 30px;
+        border-radius: 17px;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 5px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .statement-banner h2 {
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .statement-banner p {
+            color: #dce8ff;
+            margin: 8px 0 0;
+        }
+
+    .banner-icon {
+        font-size: 55px;
+        color: #f3c65e;
+    }
+
+    .account-summary {
+        background: #f0f4ff;
+        border: 1px solid #d6e2ff;
+        border-radius: 15px;
+        padding: 22px;
+        margin-bottom: 28px;
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .summary-value {
+        color: #09244d;
+        font-size: 19px;
+        font-weight: 700;
+        margin-top: 5px;
+        overflow-wrap: anywhere;
+    }
+
+    .balance-value {
+        color: #c18a19;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .section-heading {
+        color: #09244d;
+        font-weight: 700;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .section-heading i {
+            color: #d6a32e;
+            font-size: 25px;
+        }
+
+    .transaction-wrapper {
+        border: 1px solid #dce5f7;
+        border-radius: 14px;
+        overflow: hidden;
+        background: white;
+    }
+
+        .transaction-wrapper table {
+            margin-bottom: 0;
+        }
+
+        .transaction-wrapper thead {
+            background: #092b59;
+            color: white;
+        }
+
+        .transaction-wrapper th {
+            padding: 15px;
+            white-space: nowrap;
+        }
+
+        .transaction-wrapper td {
+            padding: 13px 15px;
+            vertical-align: middle;
+        }
+
+        .transaction-wrapper tbody tr:hover {
+            background: #f2f6ff;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .btn-statement {
+        background: #087b46;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 22px;
+        font-weight: 600;
+    }
+
+        .btn-statement:hover {
+            background: #056238;
+            color: white;
+        }
+
+    .btn-back {
+        background: white;
+        color: #123b78;
+        border: 1px solid #b8c9e8;
+        border-radius: 10px;
+        padding: 12px 22px;
+        font-weight: 600;
+    }
+
+        .btn-back:hover {
+            background: #eaf0ff;
+            color: #09244d;
+        }
+
+    @@media (max-width: 768px) {
+        .statement-card {
+            padding: 17px;
+        }
+
+        .statement-banner {
+            padding: 22px;
+        }
+
+            .statement-banner h2 {
+                font-size: 24px;
+            }
+
+        .banner-icon {
+            font-size: 38px;
+        }
+
+        .summary-value {
+            font-size: 16px;
+        }
+
+        .balance-value {
+            font-size: 21px;
+        }
+
+        .transaction-wrapper {
+            overflow-x: auto;
+        }
+
+            .transaction-wrapper table {
+                min-width: 650px;
+            }
+    }
+</style>
+
+<div class="container statement-container">
+
+    <div class="statement-card">
+
+        <!-- Header -->
+        <div class="statement-banner">
+            <div class="d-flex align-items-center gap-4">
+                <i class="bi bi-receipt-cutoff banner-icon"></i>
+
+                <div>
+                    <h2>Mini Statement</h2>
+                    <p>
+                        <i class="bi bi-shield-check"></i>
+                        Your recent transactions at a glance
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="account-summary">
+            <div class="row align-items-center g-4">
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-credit-card-2-front fs-1 text-primary"></i>
+
+                        <div>
+                            <div class="summary-label">Account Details</div>
+                            <div class="summary-value">
+                                @Model.Account.AccountType Account
+                            </div>
+                            <small class="text-muted">
+                                @Model.Account.AccountNumber
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-wallet2 fs-1 text-warning"></i>
+
+                        <div>
+                            <div class="summary-label">Available Balance</div>
+                            <div class="balance-value">
+                                Rs @Model.Account.Balance.ToString("N2")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="section-heading">
+            <i class="bi bi-clock-history"></i>
+            <h4 class="mb-0">Last 5 Transactions</h4>
+        </div>
+
+        <div class="transaction-wrapper">
+            <partial name="_TransactionTable"
+                     model="Model.Transactions" />
+        </div>
+
+        <!-- Buttons -->
+        <div class="action-buttons">
+
+            <a class="btn btn-statement"
+               asp-action="Statement"
+               asp-route-id="@Model.Account.Id">
+
+                <i class="bi bi-file-earmark-text me-2"></i>
+                Full Statement
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+
+            <a class="btn btn-back"
+               asp-action="Index">
+
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Accounts
+            </a>
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,249 @@
+﻿@{
+    ViewData["Title"] = "SmartBank - Home";
+}
+
+<style>
+    body {
+        background: #f4f7fb;
+    }
+
+    .hero {
+        background: linear-gradient(120deg, #071d3b, #123e70);
+        color: white;
+        border-radius: 22px;
+        padding: 65px 45px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            color: #d4dfef;
+            font-size: 17px;
+            max-width: 550px;
+        }
+
+    .hero-btn {
+        background: #d9ad55;
+        color: #071d3b;
+        border: none;
+        padding: 12px 27px;
+        border-radius: 8px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .hero-btn:hover {
+            background: #efc875;
+            color: #071d3b;
+        }
+
+    .bank-card {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        height: 100%;
+        box-shadow: 0 5px 22px rgba(0,0,0,.05);
+        transition: .3s;
+    }
+
+        .bank-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,.09);
+        }
+
+    .service-icon {
+        width: 52px;
+        height: 52px;
+        background: #eaf0fa;
+        color: #123e70;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+        margin-bottom: 18px;
+    }
+
+    .bank-card h5 {
+        color: #102b4e;
+        font-weight: 700;
+    }
+
+    .bank-card p {
+        color: #778397;
+        font-size: 14px;
+    }
+
+    .section-title {
+        color: #102b4e;
+        font-weight: 800;
+    }
+
+    .security-banner {
+        background: #e8f1ec;
+        border-radius: 15px;
+        padding: 25px;
+        color: #245c40;
+    }
+
+    .service-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+        .service-link:hover {
+            color: inherit;
+        }
+
+    @@media(max-width: 576px) {
+        .hero {
+            padding: 40px 25px;
+        }
+
+            .hero h1 {
+                font-size: 31px;
+            }
+    }
+</style>
+
+<div class="container py-4">
+
+    <!-- Hero Section -->
+    <section class="hero mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark mb-3">
+                    Welcome to SmartBank
+                </span>
+
+                <h1>Banking Made Simple & Secure.</h1>
+
+                <p class="mt-3">
+                    Experience modern digital banking with secure
+                    transactions, easy payments and complete control
+                    over your finances.
+                </p>
+
+                <a asp-controller="Auth" asp-action="Login"
+                   class="hero-btn mt-3">
+                    Get Started →
+                </a>
+            </div>
+
+            <div class="col-lg-4 text-center d-none d-lg-block">
+                <div style="font-size:110px;">🏦</div>
+                <h4 class="text-warning">Your Money, Your Control</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="section-title">Our Banking Services</h3>
+            <p class="text-muted">Everything you need in one place.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Auth" asp-action="Login" class="service-link">
+                <div class="bank-card">
+                    <div class="service-icon">💳</div>
+                    <h5>Accounts</h5>
+                    <p>Manage your bank accounts and check your balance.</p>
+                    <span class="text-primary fw-bold">Explore →</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Auth" asp-action="Login" class="service-link">
+                <div class="bank-card">
+                    <div class="service-icon">💸</div>
+                    <h5>Fund Transfer</h5>
+                    <p>Transfer money quickly and securely.</p>
+                    <span class="text-primary fw-bold">Explore →</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Auth" asp-action="Login" class="service-link">
+                <div class="bank-card">
+                    <div class="service-icon">📄</div>
+                    <h5>Bill Payments</h5>
+                    <p>Pay electricity, gas, water and internet bills.</p>
+                    <span class="text-primary fw-bold">Explore →</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Auth" asp-action="Login" class="service-link">
+                <div class="bank-card">
+                    <div class="service-icon">📊</div>
+                    <h5>Account Statement</h5>
+                    <p>View your transaction history and statements.</p>
+                    <span class="text-primary fw-bold">Explore →</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Auth" asp-action="Login" class="service-link">
+                <div class="bank-card">
+                    <div class="service-icon">💰</div>
+                    <h5>Loans & Savings</h5>
+                    <p>Explore savings plans and loan services.</p>
+                    <span class="text-primary fw-bold">Explore →</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Auth" asp-action="Login" class="service-link">
+                <div class="bank-card">
+                    <div class="service-icon">🛡️</div>
+                    <h5>Secure Banking</h5>
+                    <p>Your banking experience with account security.</p>
+                    <span class="text-primary fw-bold">Explore →</span>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Security -->
+    <div class="security-banner mt-5">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+                <span style="font-size:45px;">🔒</span>
+            </div>
+            <div class="col-md-10">
+                <h5 class="fw-bold">Your Security Matters</h5>
+                <p class="mb-0">
+                    SmartBank provides a secure digital banking experience
+                    with protected access and transaction verification.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-5 py-3">
+        <h5 class="fw-bold text-dark">SMARTBANK</h5>
+        <p class="text-muted small">
+            © @DateTime.Now.Year SmartBank. All Rights Reserved.
+            <br />Smart Banking. Smarter Future.
+        </p>
+    </div>
+
+</div>

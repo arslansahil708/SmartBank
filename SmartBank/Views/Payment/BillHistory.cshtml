@@ -1,0 +1,284 @@
+﻿@model List<SmartBank.Models.BillPayment>
+@{
+    ViewData["Title"] = "Bill / Load History";
+}
+
+<style>
+    :root {
+        --bank-navy: #102a43;
+        --bank-blue: #173f5f;
+        --bank-gold: #d4a84f;
+        --bank-light: #f4f7fb;
+    }
+
+    .history-page {
+        padding: 10px 0 30px;
+    }
+
+    .page-heading {
+        color: var(--bank-navy);
+        font-weight: 700;
+    }
+
+    .page-subtitle {
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .bank-card {
+        background: #fff;
+        border: 1px solid #e5eaf0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(16, 42, 67, .07);
+    }
+
+    .bank-card-header {
+        background: var(--bank-navy);
+        color: white;
+        padding: 17px 20px;
+        border-bottom: 3px solid var(--bank-gold);
+    }
+
+        .bank-card-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .history-table {
+        min-width: 850px;
+        margin-bottom: 0;
+    }
+
+        .history-table thead th {
+            background: var(--bank-light);
+            color: var(--bank-navy);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            padding: 14px 12px;
+            white-space: nowrap;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .history-table tbody td {
+            padding: 14px 12px;
+            vertical-align: middle;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        .history-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+    .amount {
+        color: var(--bank-navy);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .reference {
+        font-size: 12px;
+        color: #64748b;
+        overflow-wrap: anywhere;
+    }
+
+    .category-badge {
+        background: #edf2f7;
+        color: var(--bank-navy);
+        border: 1px solid #dce5ef;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .btn-bank {
+        background: var(--bank-navy);
+        color: white;
+        border: 1px solid var(--bank-navy);
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-weight: 600;
+    }
+
+        .btn-bank:hover {
+            background: var(--bank-blue);
+            color: white;
+        }
+
+    .btn-bank-outline {
+        background: white;
+        color: var(--bank-navy);
+        border: 1px solid var(--bank-navy);
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-weight: 600;
+    }
+
+        .btn-bank-outline:hover {
+            background: var(--bank-navy);
+            color: white;
+        }
+
+    .empty-state {
+        padding: 40px 15px !important;
+        color: #718096 !important;
+    }
+
+        .empty-state i {
+            display: block;
+            font-size: 35px;
+            color: var(--bank-gold);
+            margin-bottom: 10px;
+        }
+
+    @@media (max-width: 767px) {
+        .page-heading {
+            font-size: 23px;
+        }
+
+        .action-buttons a {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid history-page">
+
+    <!-- Page Heading -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+        <div>
+            <h3 class="page-heading mb-1">
+                <i class="bi bi-receipt-cutoff me-2"></i>
+                Bill and Mobile Load History
+            </h3>
+
+            <p class="page-subtitle mb-0">
+                View your previous bill payments and mobile load transactions.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 action-buttons">
+            <a class="btn btn-bank-outline" asp-action="Bills">
+                <i class="bi bi-receipt me-2"></i>
+                Pay a Bill
+            </a>
+
+            <a class="btn btn-bank" asp-action="MobileLoad">
+                <i class="bi bi-phone me-2"></i>
+                Mobile Load
+            </a>
+        </div>
+
+    </div>
+
+    <!-- History Table -->
+    <div class="bank-card">
+
+        <div class="bank-card-header d-flex justify-content-between align-items-center">
+
+            <h5>
+                <i class="bi bi-clock-history me-2"></i>
+                Payment History
+            </h5>
+
+            <span class="badge bg-light text-dark">
+                @Model.Count Transactions
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover history-table">
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Company</th>
+                        <th>Consumer / Mobile</th>
+                        <th class="text-end">Amount (Rs)</th>
+                        <th>Reference</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var b in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">
+                                    @b.Date.ToString("dd MMM yyyy")
+                                </div>
+                                <small class="text-muted">
+                                    @b.Date.ToString("HH:mm")
+                                </small>
+                            </td>
+
+                            <td>
+                                <span class="category-badge">
+                                    @b.Category
+                                </span>
+                            </td>
+
+                            <td class="fw-semibold">
+                                @b.Company
+                            </td>
+
+                            <td>
+                                @b.ConsumerNumber
+                            </td>
+
+                            <td class="text-end amount">
+                                Rs @b.Amount.ToString("N2")
+                            </td>
+
+                            <td class="reference">
+                                @b.Reference
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center empty-state">
+                                <i class="bi bi-receipt"></i>
+
+                                <strong>No payments yet.</strong>
+
+                                <div class="small mt-1">
+                                    Your bill and mobile load transactions will appear here.
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="mt-4 d-flex flex-wrap gap-2 action-buttons">
+
+        <a class="btn btn-bank-outline" asp-action="Bills">
+            <i class="bi bi-lightning-charge me-2"></i>
+            Pay Electricity / Gas / Water Bill
+        </a>
+
+        <a class="btn btn-bank" asp-action="MobileLoad">
+            <i class="bi bi-phone-fill me-2"></i>
+            Recharge Mobile
+        </a>
+
+    </div>
+
+</div>

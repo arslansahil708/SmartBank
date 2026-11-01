@@ -1,0 +1,277 @@
+﻿@model List<LoanInstallment>
+
+@{
+    ViewData["Title"] = "Repayment History";
+
+    var totalPaid = Model.Sum(i => i.Amount);
+    var totalCount = Model.Count;
+}
+
+<style>
+    .history-page {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .history-header {
+        background: linear-gradient(135deg, #101f3d, #203c68);
+        color: white;
+        border-radius: 16px;
+        padding: 28px;
+    }
+
+    .history-card {
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(16, 31, 61, .05);
+    }
+
+    .history-stat {
+        background: #f8f9fc;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+        padding: 18px;
+        height: 100%;
+    }
+
+    .history-label {
+        color: #78869a;
+        font-size: 13px;
+        margin-bottom: 7px;
+    }
+
+    .history-value {
+        color: #172b4d;
+        font-size: 21px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .history-icon {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5edda;
+        color: #a47b25;
+        border-radius: 12px;
+        font-size: 20px;
+    }
+
+    .section-title {
+        color: #172b4d;
+        font-weight: 700;
+    }
+
+    .table thead th {
+        background: #f3f5f9;
+        color: #263b5b;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .loan-link {
+        color: #203c68;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .loan-link:hover {
+            color: #b28a32;
+            text-decoration: underline;
+        }
+
+    @@media (max-width: 576px) {
+        .history-header {
+            padding: 20px;
+        }
+
+            .history-header h3 {
+                font-size: 21px;
+            }
+    }
+</style>
+
+<div class="history-page">
+
+    <!-- Header -->
+    <div class="history-header mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div class="history-icon">
+                <i class="bi bi-clock-history"></i>
+            </div>
+
+            <div>
+                <div class="small text-white-50 mb-1">
+                    SmartBank / Loans
+                </div>
+
+                <h3 class="fw-bold mb-1">Loan Repayment History</h3>
+
+                <p class="text-white-50 mb-0">
+                    View your previous loan installment payments.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+            <div class="history-stat">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="history-label">Total Repayments</div>
+                        <div class="history-value">@totalCount</div>
+                    </div>
+
+                    <div class="history-icon">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="history-stat">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="history-label">Total Amount Paid</div>
+                        <div class="history-value">
+                            Rs @totalPaid.ToString("N2")
+                        </div>
+                    </div>
+
+                    <div class="history-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Payment History Table -->
+    <div class="history-card p-4 mb-4">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <h5 class="section-title mb-0">
+                <i class="bi bi-list-check me-2 text-warning"></i>
+                Payment Records
+            </h5>
+
+            <span class="badge bg-light text-dark border">
+                @totalCount Records
+            </span>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <div class="history-icon mb-3">
+                    <i class="bi bi-receipt-cutoff"></i>
+                </div>
+
+                <h6 class="fw-bold text-dark">No Repayments Yet</h6>
+
+                <p class="text-muted mb-0">
+                    Your loan payment history will appear here after your first payment.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Paid On</th>
+                            <th>Loan</th>
+                            <th>Installment</th>
+                            <th class="text-end">Amount</th>
+                            <th>Reference</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var i in Model.OrderByDescending(x => x.PaidDate))
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold text-dark">
+                                        @(i.PaidDate?.ToString("dd MMM yyyy") ?? "-")
+                                    </div>
+
+                                    <small class="text-muted">
+                                        @(i.PaidDate?.ToString("HH:mm") ?? "")
+                                    </small>
+                                </td>
+
+                                <td>
+                                    <a class="loan-link"
+                                       asp-action="Details"
+                                       asp-route-id="@i.LoanId">
+                                        @i.Loan?.LoanType Loan #@i.LoanId
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        #@i.No
+                                    </span>
+                                </td>
+
+                                <td class="text-end">
+                                    <span class="fw-bold text-success">
+                                        Rs @i.Amount.ToString("N2")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <small class="text-muted">
+                                        @(string.IsNullOrWhiteSpace(i.PaymentReference)
+                                            ? "-"
+                                            : i.PaymentReference)
+                                    </small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                    <tfoot>
+                        <tr class="table-light">
+                            <th colspan="3" class="text-end">
+                                Total Paid:
+                            </th>
+
+                            <th class="text-end text-success">
+                                Rs @totalPaid.ToString("N2")
+                            </th>
+
+                            <th></th>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
+        }
+
+    </div>
+
+    <!-- Back Button -->
+    <a class="btn btn-outline-secondary mb-4"
+       asp-action="Index">
+        <i class="bi bi-arrow-left me-1"></i>
+        Back to Loans
+    </a>
+
+</div>

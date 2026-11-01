@@ -1,0 +1,391 @@
+﻿@model SmartBank.ViewModels.CalculatorViewModel
+
+@{
+    ViewData["Title"] = "Profit Calculator";
+}
+
+<style>
+    .calculator-page {
+        padding: 35px 12px;
+    }
+
+    .calculator-card {
+        background: white;
+        border: 1px solid #e0e8f8;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 35px rgba(8, 35, 75, 0.09);
+    }
+
+    .calculator-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 30px;
+        border-bottom: 4px solid #e7b94f;
+    }
+
+        .calculator-header h3 {
+            font-weight: 750;
+            margin-bottom: 8px;
+        }
+
+        .calculator-header p {
+            color: #dce8ff;
+            margin: 0;
+            font-size: 14px;
+        }
+
+    .calculator-icon {
+        width: 58px;
+        height: 58px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #f3c65e;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+    }
+
+    .calculator-body {
+        padding: 30px;
+    }
+
+    .calculator-label {
+        color: #09244d;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 9px;
+    }
+
+    .calculator-input {
+        border: 1px solid #dce4f0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+
+        .calculator-input:focus {
+            border-color: #1451a0;
+            box-shadow: 0 0 0 3px rgba(20, 81, 160, 0.1);
+        }
+
+    .input-group-text {
+        background: #f1f5ff;
+        color: #1451a0;
+        border: 1px solid #dce4f0;
+        font-weight: 700;
+        border-radius: 10px 0 0 10px;
+    }
+
+    .btn-calculate {
+        background: #092f66;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+        .btn-calculate:hover {
+            background: #1451a0;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .result-section {
+        background: #f5f8ff;
+        border: 1px solid #dce7f8;
+        border-radius: 15px;
+        padding: 22px;
+        margin-top: 28px;
+    }
+
+    .result-title {
+        color: #09244d;
+        font-weight: 750;
+        margin-bottom: 20px;
+    }
+
+    .result-item {
+        background: white;
+        border: 1px solid #e5ebf5;
+        border-radius: 11px;
+        padding: 17px;
+        margin-bottom: 12px;
+    }
+
+    .result-label {
+        color: #718096;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .result-value {
+        color: #09244d;
+        font-size: 20px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .profit-value {
+        color: #087b46;
+    }
+
+    .maturity-box {
+        background: linear-gradient(120deg, #09244d, #1451a0);
+        border: 2px solid #d6a32e;
+        border-radius: 13px;
+        padding: 22px;
+        color: white;
+        margin-top: 15px;
+    }
+
+        .maturity-box .result-label {
+            color: #dce8ff;
+        }
+
+    .maturity-value {
+        color: #f3c65e;
+        font-size: 27px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .btn-deposit {
+        display: inline-block;
+        background: #d6a32e;
+        color: #09244d;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 18px;
+        font-weight: 750;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .btn-deposit:hover {
+            background: #efc75e;
+            color: #09244d;
+        }
+
+    .calculator-note {
+        color: #718096;
+        font-size: 12px;
+        margin-top: 22px;
+        line-height: 1.6;
+    }
+
+    @@media (max-width: 576px) {
+        .calculator-header {
+            padding: 22px;
+        }
+
+        .calculator-body {
+            padding: 20px;
+        }
+
+        .maturity-value {
+            font-size: 23px;
+        }
+    }
+</style>
+
+<div class="container calculator-page">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7 col-md-9">
+
+            <div class="calculator-card">
+
+                <!-- Header -->
+                <div class="calculator-header">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="calculator-icon">
+                            <i class="bi bi-calculator"></i>
+                        </div>
+
+                        <div>
+                            <h3>Profit Calculator</h3>
+
+                            <p>
+                                Calculate your estimated deposit return
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Calculator Form -->
+                <div class="calculator-body">
+
+                    <h5 class="result-title">
+                        <i class="bi bi-pencil-square text-warning me-2"></i>
+                        Deposit Details
+                    </h5>
+
+                    <form asp-action="Calculator" method="get">
+
+                        <!-- Amount -->
+                        <div class="mb-4">
+
+                            <label class="calculator-label">
+                                <i class="bi bi-cash-stack text-primary me-1"></i>
+                                Investment Amount
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    Rs
+                                </span>
+
+                                <input name="amount"
+                                       type="number"
+                                       step="0.01"
+                                       min="1"
+                                       class="form-control calculator-input"
+                                       value="@Model.Amount"
+                                       placeholder="Enter amount"
+                                       required />
+
+                            </div>
+
+                            <div class="form-text">
+                                Enter the amount you want to deposit.
+                            </div>
+
+                        </div>
+
+                        <!-- Period -->
+                        <div class="mb-4">
+
+                            <label class="calculator-label">
+                                <i class="bi bi-calendar-range text-primary me-1"></i>
+                                Deposit Period
+                            </label>
+
+                            <select name="months"
+                                    class="form-select calculator-input">
+
+                                @foreach (int m in Bank.DepositMonths)
+                                {
+                                    <option value="@m"
+                                            selected="@(Model.Months == m)">
+
+                                        @m months -
+                                        @Bank.DepositRate(m).ToString("0.##")% per year
+
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <button type="submit"
+                                class="btn btn-calculate w-100">
+
+                            <i class="bi bi-calculator-fill me-2"></i>
+                            Calculate Profit
+
+                        </button>
+
+                    </form>
+
+                    <!-- Result -->
+                    @if (Model.ShowResult)
+                    {
+                        <div class="result-section">
+
+                            <h5 class="result-title">
+                                <i class="bi bi-graph-up-arrow text-success me-2"></i>
+                                Calculation Results
+                            </h5>
+
+                            <!-- Rate -->
+                            <div class="result-item">
+
+                                <div class="result-label">
+                                    Annual Profit Rate
+                                </div>
+
+                                <div class="result-value">
+                                    @Model.Rate.ToString("0.##")% per year
+                                </div>
+
+                            </div>
+
+                            <!-- Profit -->
+                            <div class="result-item">
+
+                                <div class="result-label">
+                                    Estimated Profit
+                                </div>
+
+                                <div class="result-value profit-value">
+                                    Rs @Model.Profit.ToString("N2")
+                                </div>
+
+                            </div>
+
+                            <!-- Maturity -->
+                            <div class="maturity-box">
+
+                                <div class="result-label">
+                                    Total Amount at Maturity
+                                </div>
+
+                                <div class="maturity-value">
+                                    Rs @Model.MaturityAmount.ToString("N2")
+                                </div>
+
+                                <div class="small mt-2 text-light">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Estimated maturity amount
+                                </div>
+
+                            </div>
+
+                            <!-- Open Deposit -->
+                            <div class="mt-4">
+
+                                <a class="btn-deposit w-100 text-center"
+                                   asp-action="NewDeposit">
+
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Open a Term Deposit
+
+                                </a>
+
+                            </div>
+
+                        </div>
+                    }
+
+                    <!-- Note -->
+                    <div class="calculator-note">
+
+                        <i class="bi bi-info-circle text-primary me-1"></i>
+
+                        Profit calculations are estimates based on the selected
+                        deposit period and applicable annual rate.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,385 @@
+﻿@model List<AuditLog>
+
+@{
+    ViewData["Title"] = "Audit Logs";
+}
+
+<style>
+    body {
+        background: #f1f5ff;
+    }
+
+    .audit-container {
+        max-width: 1350px;
+        margin: 35px auto;
+        padding: 15px;
+    }
+
+    .audit-card {
+        background: white;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 8px 30px rgba(8, 35, 75, 0.09);
+        border: 1px solid #e0e8f8;
+    }
+
+    .audit-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        border-bottom: 5px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .audit-header h2 {
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .audit-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .header-icon {
+        font-size: 48px;
+        color: #f3c65e;
+    }
+
+    .search-box {
+        background: #f7f9ff;
+        border: 1px solid #e0e8f8;
+        padding: 20px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+    }
+
+        .search-box .form-control {
+            border-radius: 9px;
+            padding: 12px;
+            border: 1px solid #d5deed;
+        }
+
+            .search-box .form-control:focus {
+                border-color: #d5a63b;
+                box-shadow: 0 0 0 3px rgba(213, 166, 59, 0.12);
+            }
+
+    .btn-search {
+        background: #087b46;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 24px;
+        font-weight: 600;
+    }
+
+        .btn-search:hover {
+            background: #056238;
+            color: white;
+        }
+
+    .info-notice {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fff9e9;
+        border: 1px solid #f1d68c;
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+
+        .info-notice i {
+            color: #bd8b1c;
+            font-size: 22px;
+        }
+
+        .info-notice span {
+            color: #775510;
+            font-size: 14px;
+        }
+
+    .table-heading {
+        color: #09244d;
+        font-weight: 700;
+        margin-bottom: 17px;
+    }
+
+    .table-wrapper {
+        border: 1px solid #dce5f7;
+        border-radius: 13px;
+        overflow-x: auto;
+    }
+
+    .audit-table {
+        margin-bottom: 0;
+        min-width: 850px;
+    }
+
+        .audit-table thead {
+            background: #092b59;
+            color: white;
+        }
+
+        .audit-table th {
+            padding: 16px 14px;
+            font-size: 13px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .audit-table td {
+            padding: 15px 14px;
+            vertical-align: middle;
+            color: #344563;
+        }
+
+        .audit-table tbody tr:hover {
+            background: #f2f6ff;
+        }
+
+    .log-time {
+        color: #64748b;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .customer-id {
+        display: inline-block;
+        background: #edf3ff;
+        color: #123b78;
+        border: 1px solid #d6e2ff;
+        border-radius: 7px;
+        padding: 5px 10px;
+        font-weight: 700;
+        font-size: 12px;
+    }
+
+    .action-name {
+        color: #09244d;
+        font-weight: 700;
+    }
+
+    .details-text {
+        max-width: 450px;
+        overflow-wrap: anywhere;
+        line-height: 1.6;
+    }
+
+    .empty-state {
+        padding: 45px 15px !important;
+        color: #718096 !important;
+        text-align: center;
+    }
+
+        .empty-state i {
+            display: block;
+            font-size: 42px;
+            color: #b5c4dc;
+            margin-bottom: 10px;
+        }
+
+    @@media (max-width: 768px) {
+        .audit-card {
+            padding: 16px;
+        }
+
+        .audit-header {
+            padding: 22px;
+        }
+
+            .audit-header h2 {
+                font-size: 23px;
+            }
+
+        .header-icon {
+            font-size: 38px;
+        }
+    }
+</style>
+
+<div class="container audit-container">
+
+    <div class="audit-card">
+
+        <!-- Header -->
+        <div class="audit-header">
+
+            <div class="d-flex align-items-center gap-4">
+
+                <i class="bi bi-shield-lock-fill header-icon"></i>
+
+                <div>
+                    <h2>Audit Logs</h2>
+
+                    <p>
+                        <i class="bi bi-shield-check me-1"></i>
+                        Monitor and review system activities
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Search -->
+        <div class="search-box">
+
+            <form method="get">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-9">
+
+                        <label class="form-label fw-semibold text-secondary">
+                            Search Audit Logs
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search text-primary"></i>
+                            </span>
+
+                            <input name="q"
+                                   value="@ViewBag.Q"
+                                   class="form-control"
+                                   placeholder="Search action or details..." />
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button type="submit" class="btn btn-search w-100">
+                            <i class="bi bi-search me-2"></i>
+                            Search Logs
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- Information -->
+        <div class="info-notice">
+
+            <i class="bi bi-info-circle-fill"></i>
+
+            <span>
+                Showing the latest <strong>200 audit logs</strong>.
+                Review customer activities and system events.
+            </span>
+
+        </div>
+
+        <!-- Table Heading -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h5 class="table-heading mb-0">
+                <i class="bi bi-clock-history text-warning me-2"></i>
+                Activity History
+            </h5>
+
+            <span class="badge rounded-pill text-bg-light border px-3 py-2">
+                @Model.Count() Logs
+            </span>
+
+        </div>
+
+        <!-- Audit Table -->
+        <div class="table-wrapper">
+
+            <table class="table audit-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>
+                            <i class="bi bi-calendar3 me-1"></i>
+                            Date & Time
+                        </th>
+
+                        <th>Customer ID</th>
+
+                        <th>
+                            <i class="bi bi-activity me-1"></i>
+                            Action
+                        </th>
+
+                        <th>
+                            <i class="bi bi-card-text me-1"></i>
+                            Details
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <div class="log-time">
+                                    <i class="bi bi-clock me-1"></i>
+                                    @a.CreatedAt.ToString("dd MMM yyyy")
+                                    <br />
+                                    <span class="ms-3">
+                                        @a.CreatedAt.ToString("HH:mm:ss")
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="customer-id">
+                                    @(a.CustomerId?.ToString() ?? "-")
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="action-name">
+                                    @a.Action
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="details-text">
+                                    @a.Details
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="empty-state">
+
+                                <i class="bi bi-journal-x"></i>
+
+                                <strong>No Audit Logs Found</strong>
+
+                                <div class="small mt-1">
+                                    No records match your search.
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

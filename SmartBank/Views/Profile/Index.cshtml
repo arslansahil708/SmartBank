@@ -1,0 +1,397 @@
+﻿@model Customer
+
+@{
+    ViewData["Title"] = "My Profile";
+
+    string cnic = Model.Cnic ?? "";
+
+    string maskedCnic = cnic.Length > 4
+        ? new string('*', cnic.Length - 4) + cnic.Substring(cnic.Length - 4)
+        : cnic;
+
+    string address = string.IsNullOrEmpty(Model.Address)
+        ? "Not set (use Services > Change Address)"
+        : Model.Address;
+}
+
+<style>
+    .my-profile-page {
+        --navy: #102b46;
+        --gold: #c9a44c;
+        color: #26384a;
+    }
+
+    .profile-banner {
+        background: linear-gradient(120deg, #102b46, #234e70);
+        color: white;
+        border-radius: 17px;
+        padding: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .profile-banner::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border: 25px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            right: -40px;
+            top: -65px;
+        }
+
+    .profile-avatar {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.13);
+        color: #e6c777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+    }
+
+    .profile-status {
+        background: #c9a44c;
+        color: #102b46;
+        border-radius: 30px;
+        padding: 8px 15px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .profile-info-card {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 15px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 4px 15px rgba(16,43,70,.04);
+        transition: .2s;
+    }
+
+        .profile-info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(16,43,70,.08);
+        }
+
+    .info-icon {
+        width: 43px;
+        height: 43px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        margin-bottom: 14px;
+    }
+
+    .icon-navy {
+        background: #eaf0f6;
+        color: #173c5c;
+    }
+
+    .icon-gold {
+        background: #fbf3df;
+        color: #a47b25;
+    }
+
+    .icon-blue {
+        background: #e8f2ff;
+        color: #2875c7;
+    }
+
+    .icon-green {
+        background: #e8f6ef;
+        color: #238456;
+    }
+
+    .info-label {
+        color: #8995a2;
+        font-size: 12px;
+        font-weight: 650;
+        margin-bottom: 7px;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .info-value {
+        color: #102b46;
+        font-size: 15px;
+        font-weight: 650;
+        overflow-wrap: anywhere;
+        margin-bottom: 0;
+    }
+
+    .profile-section {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 15px;
+        padding: 23px;
+        box-shadow: 0 4px 15px rgba(16,43,70,.04);
+    }
+
+    .profile-section-title {
+        color: #102b46;
+        font-weight: 750;
+    }
+
+    .profile-action {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #34495e;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+        .profile-action:hover {
+            background: #f6f8fa;
+            border-color: #c9a44c;
+            color: #102b46;
+            transform: translateX(3px);
+        }
+
+    .action-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf0f6;
+        color: #173c5c;
+        font-size: 17px;
+    }
+
+    .profile-note {
+        background: #fbf7eb;
+        border: 1px solid #f0e5c9;
+        color: #806b3e;
+        border-radius: 11px;
+        padding: 15px;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    @@media (max-width: 576px) {
+        .profile-banner {
+            padding: 21px;
+        }
+
+        .profile-info-card {
+            padding: 16px;
+        }
+
+        .profile-section {
+            padding: 18px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4 my-profile-page">
+
+    <!-- Profile Header -->
+    <div class="profile-banner mb-4">
+
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 position-relative"
+             style="z-index:1;">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="profile-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <div>
+                    <h3 class="fw-bold mb-1">My Profile</h3>
+
+                    <h5 class="mb-1">
+                        @Model.FullName
+                    </h5>
+
+                    <p class="text-white-50 mb-0 small">
+                        SmartBank Customer Account
+                    </p>
+                </div>
+
+            </div>
+
+            <span class="profile-status">
+                <i class="bi bi-shield-check me-1"></i>
+                Account Profile
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Profile Information -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h5 class="profile-section-title mb-1">
+                <i class="bi bi-person-vcard me-2"></i>
+                Personal Information
+            </h5>
+            <p class="text-muted small mb-0">
+                Your registered customer information.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <!-- Full Name -->
+        <div class="col-xl-4 col-md-6">
+            <div class="profile-info-card">
+                <div class="info-icon icon-navy">
+                    <i class="bi bi-person"></i>
+                </div>
+
+                <div class="info-label">Full Name</div>
+                <p class="info-value">@Model.FullName</p>
+            </div>
+        </div>
+
+        <!-- CNIC -->
+        <div class="col-xl-4 col-md-6">
+            <div class="profile-info-card">
+                <div class="info-icon icon-gold">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+
+                <div class="info-label">CNIC Number</div>
+                <p class="info-value">@maskedCnic</p>
+                <small class="text-muted">Protected information</small>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-xl-4 col-md-6">
+            <div class="profile-info-card">
+                <div class="info-icon icon-blue">
+                    <i class="bi bi-envelope"></i>
+                </div>
+
+                <div class="info-label">Email Address</div>
+                <p class="info-value">@Model.Email</p>
+            </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="col-xl-4 col-md-6">
+            <div class="profile-info-card">
+                <div class="info-icon icon-green">
+                    <i class="bi bi-telephone"></i>
+                </div>
+
+                <div class="info-label">Mobile Number</div>
+                <p class="info-value">@Model.Phone</p>
+            </div>
+        </div>
+
+        <!-- Address -->
+        <div class="col-xl-4 col-md-6">
+            <div class="profile-info-card">
+                <div class="info-icon icon-gold">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+
+                <div class="info-label">Residential Address</div>
+                <p class="info-value">@address</p>
+            </div>
+        </div>
+
+        <!-- Customer Since -->
+        <div class="col-xl-4 col-md-6">
+            <div class="profile-info-card">
+                <div class="info-icon icon-navy">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+
+                <div class="info-label">Customer Since</div>
+                <p class="info-value">
+                    @Model.CreatedAt.ToString("dd MMM yyyy")
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Account Settings -->
+    <div class="profile-section mb-4">
+
+        <h5 class="profile-section-title mb-1">
+            <i class="bi bi-gear me-2"></i>
+            Account Settings
+        </h5>
+
+        <p class="text-muted small mb-4">
+            Manage your contact information and account security.
+        </p>
+
+        <div class="row g-3">
+
+            <div class="col-lg-4">
+                <a asp-action="Edit" class="profile-action">
+                    <span class="action-icon">
+                        <i class="bi bi-pencil-square"></i>
+                    </span>
+
+                    <span class="flex-grow-1">
+                        Update Email / Mobile
+                    </span>
+
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="col-lg-4">
+                <a asp-action="ChangePassword" class="profile-action">
+                    <span class="action-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </span>
+
+                    <span class="flex-grow-1">
+                        Change Password
+                    </span>
+
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="col-lg-4">
+                <a asp-action="LoginHistory" class="profile-action">
+                    <span class="action-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </span>
+
+                    <span class="flex-grow-1">
+                        Login History
+                    </span>
+
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Security Notice -->
+    <div class="profile-note">
+        <i class="bi bi-shield-lock-fill me-2"></i>
+
+        <strong>Security Notice:</strong>
+        Your name and CNIC can only be changed by the bank
+        after identity verification.
+        Keep your contact information updated.
+    </div>
+
+</div>

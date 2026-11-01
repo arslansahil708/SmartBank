@@ -1,0 +1,388 @@
+﻿@model SmartBank.ViewModels.InvestmentSummaryViewModel
+
+@{
+    ViewData["Title"] = "Investment Summary";
+
+    var totalWorth = Model.AccountsTotal
+                   + Model.PlansTotal
+                   + Model.DepositsTotal
+                   - Model.LoanOutstanding;
+}
+
+<style>
+    .investment-page {
+        padding: 20px 0;
+    }
+
+    .investment-header {
+        background: linear-gradient(120deg, #071d40, #123f78);
+        color: white;
+        padding: 28px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+    }
+
+        .investment-header h3 {
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .investment-header p {
+            color: #d5e1f2;
+            margin: 0;
+            font-size: 13px;
+        }
+
+    .summary-card {
+        height: 100%;
+        background: white;
+        border: 1px solid #e5eaf2;
+        border-radius: 13px;
+        box-shadow: 0 5px 18px rgba(8, 35, 75, 0.06);
+        padding: 22px;
+        transition: 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 22px rgba(8, 35, 75, 0.10);
+        }
+
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 21px;
+        margin-bottom: 18px;
+    }
+
+    .icon-blue {
+        background: #eaf1ff;
+        color: #1451a0;
+    }
+
+    .icon-gold {
+        background: #fff5d9;
+        color: #a77a12;
+    }
+
+    .icon-green {
+        background: #e0f6e9;
+        color: #087b46;
+    }
+
+    .icon-red {
+        background: #ffe9e9;
+        color: #c03939;
+    }
+
+    .summary-label {
+        color: #718096;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        color: #09244d;
+        font-size: 23px;
+        font-weight: 800;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+        .summary-value.green {
+            color: #087b46;
+        }
+
+        .summary-value.red {
+            color: #c03939;
+        }
+
+    .worth-card {
+        background: linear-gradient(120deg, #09244d, #1451a0);
+        border: 2px solid #d6a32e;
+        color: white;
+    }
+
+        .worth-card .summary-label {
+            color: #d5e1f2;
+        }
+
+        .worth-card .summary-value {
+            color: #f3c65e;
+            font-size: 27px;
+        }
+
+        .worth-card .summary-icon {
+            background: rgba(255,255,255,0.13);
+            color: #f3c65e;
+        }
+
+    .investment-actions {
+        background: white;
+        border: 1px solid #e5eaf2;
+        border-radius: 13px;
+        padding: 20px;
+        margin-top: 12px;
+        box-shadow: 0 5px 18px rgba(8, 35, 75, 0.05);
+    }
+
+        .investment-actions h5 {
+            color: #09244d;
+            font-weight: 750;
+            margin-bottom: 15px;
+        }
+
+    .btn-investment {
+        border-radius: 8px;
+        padding: 10px 17px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.2s;
+    }
+
+    .btn-investment-primary {
+        background: #092f66;
+        color: white;
+    }
+
+        .btn-investment-primary:hover {
+            background: #1451a0;
+            color: white;
+        }
+
+    .btn-investment-gold {
+        background: #e5b84b;
+        color: #09244d;
+    }
+
+        .btn-investment-gold:hover {
+            background: #f2ca68;
+            color: #09244d;
+        }
+
+    .btn-investment-outline {
+        border: 1px solid #d6a32e;
+        color: #946c00;
+        background: white;
+    }
+
+        .btn-investment-outline:hover {
+            background: #fff5d9;
+            color: #79570e;
+        }
+
+    @@media (max-width: 576px) {
+        .investment-header {
+            padding: 21px;
+        }
+
+        .summary-value {
+            font-size: 20px;
+        }
+
+        .investment-actions .btn-investment {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+    }
+</style>
+
+<div class="container investment-page">
+
+    <!-- Header -->
+    <div class="investment-header">
+
+        <h3>
+            <i class="bi bi-graph-up-arrow me-2"></i>
+            Investment Summary
+        </h3>
+
+        <p>
+            Track your savings, investments, deposits and outstanding loans.
+        </p>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3">
+
+        <!-- Account Balance -->
+        <div class="col-md-6 col-lg-4">
+
+            <div class="summary-card">
+
+                <div class="summary-icon icon-blue">
+                    <i class="bi bi-bank"></i>
+                </div>
+
+                <div class="summary-label">
+                    Balance in Accounts
+                </div>
+
+                <h4 class="summary-value">
+                    Rs @Model.AccountsTotal.ToString("N2")
+                </h4>
+
+            </div>
+
+        </div>
+
+        <!-- Savings Plans -->
+        <div class="col-md-6 col-lg-4">
+
+            <div class="summary-card">
+
+                <div class="summary-icon icon-gold">
+                    <i class="bi bi-piggy-bank"></i>
+                </div>
+
+                <div class="summary-label">
+                    Saved in Plans
+                </div>
+
+                <h4 class="summary-value green">
+                    Rs @Model.PlansTotal.ToString("N2")
+                </h4>
+
+            </div>
+
+        </div>
+
+        <!-- Term Deposits -->
+        <div class="col-md-6 col-lg-4">
+
+            <div class="summary-card">
+
+                <div class="summary-icon icon-green">
+                    <i class="bi bi-safe2"></i>
+                </div>
+
+                <div class="summary-label">
+                    Active Term Deposits
+                </div>
+
+                <h4 class="summary-value green">
+                    Rs @Model.DepositsTotal.ToString("N2")
+                </h4>
+
+            </div>
+
+        </div>
+
+        <!-- Expected Profit -->
+        <div class="col-md-6 col-lg-4">
+
+            <div class="summary-card">
+
+                <div class="summary-icon icon-gold">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+
+                <div class="summary-label">
+                    Expected Profit on Deposits
+                </div>
+
+                <h4 class="summary-value green">
+                    Rs @Model.ExpectedProfit.ToString("N2")
+                </h4>
+
+            </div>
+
+        </div>
+
+        <!-- Outstanding Loan -->
+        <div class="col-md-6 col-lg-4">
+
+            <div class="summary-card">
+
+                <div class="summary-icon icon-red">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+
+                <div class="summary-label">
+                    Loan Still to Pay
+                </div>
+
+                <h4 class="summary-value red">
+                    Rs @Model.LoanOutstanding.ToString("N2")
+                </h4>
+
+            </div>
+
+        </div>
+
+        <!-- Total Worth -->
+        <div class="col-md-6 col-lg-4">
+
+            <div class="summary-card worth-card">
+
+                <div class="summary-icon">
+                    <i class="bi bi-gem"></i>
+                </div>
+
+                <div class="summary-label">
+                    Total Net Worth
+                </div>
+
+                <h4 class="summary-value">
+                    Rs @totalWorth.ToString("N2")
+                </h4>
+
+                <small class="text-white-50">
+                    Accounts + Plans + Deposits - Loan
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Investment Actions -->
+    <div class="investment-actions">
+
+        <h5>
+            <i class="bi bi-lightning-charge-fill text-warning me-2"></i>
+            Investment Services
+        </h5>
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <a class="btn-investment btn-investment-primary"
+               asp-action="Plans">
+
+                <i class="bi bi-piggy-bank me-2"></i>
+                Savings Plans
+
+            </a>
+
+            <a class="btn-investment btn-investment-gold"
+               asp-action="Deposits">
+
+                <i class="bi bi-safe2 me-2"></i>
+                Term Deposits
+
+            </a>
+
+            <a class="btn-investment btn-investment-outline"
+               asp-action="Calculator">
+
+                <i class="bi bi-calculator me-2"></i>
+                Profit Calculator
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

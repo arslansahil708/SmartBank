@@ -1,0 +1,376 @@
+﻿@model BankTransaction
+
+@{
+    ViewData["Title"] = "Payment Receipt";
+}
+
+<style>
+    .receipt-page {
+        background: #f4f7fb;
+        min-height: 85vh;
+        padding: 40px 12px;
+    }
+
+    .receipt-card {
+        max-width: 680px;
+        margin: auto;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(16, 42, 67, .10);
+    }
+
+    .receipt-header {
+        background: linear-gradient(135deg, #102a43, #173f5f);
+        color: white;
+        text-align: center;
+        padding: 30px 20px;
+        border-bottom: 4px solid #d4a84f;
+    }
+
+    .success-icon {
+        width: 65px;
+        height: 65px;
+        background: rgba(255,255,255,.12);
+        border: 2px solid #d4a84f;
+        color: #d4a84f;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin: 0 auto 14px;
+    }
+
+    .receipt-header h4 {
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .receipt-header p {
+        color: #dce6ef;
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .receipt-body {
+        padding: 30px;
+    }
+
+    .amount-section {
+        text-align: center;
+        padding: 15px 10px 25px;
+        border-bottom: 1px dashed #dce3eb;
+        margin-bottom: 25px;
+    }
+
+    .amount-label {
+        color: #718096;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .amount-value {
+        color: #16804a;
+        font-size: 32px;
+        font-weight: 800;
+        margin-top: 5px;
+    }
+
+    .detail-heading {
+        color: #102a43;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .receipt-table {
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+        .receipt-table table {
+            margin: 0;
+        }
+
+        .receipt-table th {
+            background: #f1f5f9;
+            color: #173f5f;
+            width: 40%;
+            font-weight: 600;
+        }
+
+        .receipt-table th,
+        .receipt-table td {
+            padding: 13px 15px;
+            vertical-align: middle;
+            overflow-wrap: anywhere;
+        }
+
+    .reference-value {
+        color: #173f5f;
+        font-weight: 700;
+    }
+
+    .balance-value {
+        color: #16804a;
+        font-weight: 700;
+    }
+
+    .receipt-footer {
+        border-top: 1px dashed #dce3eb;
+        margin-top: 25px;
+        padding-top: 22px;
+        text-align: center;
+    }
+
+    .btn-print {
+        background: white;
+        color: #173f5f;
+        border: 1px solid #173f5f;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+    }
+
+        .btn-print:hover {
+            background: #173f5f;
+            color: white;
+        }
+
+    .btn-accounts {
+        background: #102a43;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-accounts:hover {
+            background: #173f5f;
+            color: white;
+        }
+
+    .btn-transfer {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 10px 15px;
+    }
+
+        .btn-transfer:hover {
+            color: #102a43;
+        }
+
+    .thank-you {
+        color: #8795a5;
+        font-size: 12px;
+        margin-top: 22px;
+    }
+
+    @@media (max-width: 576px) {
+        .receipt-body {
+            padding: 20px 15px;
+        }
+
+        .receipt-header {
+            padding: 25px 15px;
+        }
+
+        .amount-value {
+            font-size: 27px;
+        }
+
+        .receipt-table th,
+        .receipt-table td {
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .receipt-footer .btn {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+    }
+
+    @@media print {
+        body {
+            background: white !important;
+        }
+
+        .receipt-page {
+            background: white !important;
+            padding: 0;
+            min-height: auto;
+        }
+
+        .receipt-card {
+            box-shadow: none;
+            border: 1px solid #ddd;
+            max-width: 100%;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .receipt-header {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+
+<div class="receipt-page">
+    <div class="receipt-card">
+
+        <!-- Receipt Header -->
+        <div class="receipt-header">
+
+            <div class="success-icon">
+                <i class="bi bi-check-lg"></i>
+            </div>
+
+            <h4>Payment Successful</h4>
+
+            <p>Your transaction has been completed successfully.</p>
+
+        </div>
+
+        <div class="receipt-body">
+
+            <!-- Amount -->
+            <div class="amount-section">
+                <div class="amount-label">Transaction Amount</div>
+
+                <div class="amount-value">
+                    Rs @Model.Amount.ToString("N2")
+                </div>
+            </div>
+
+            <!-- Transaction Details -->
+            <h5 class="detail-heading">
+                <i class="bi bi-receipt me-2"></i>
+                Transaction Details
+            </h5>
+
+            <div class="receipt-table">
+                <table class="table table-bordered table-sm">
+                    <tbody>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-hash me-2"></i>
+                                Reference
+                            </th>
+                            <td class="reference-value">
+                                @Model.Reference
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Date
+                            </th>
+                            <td>
+                                @Model.Date.ToString("dd MMM yyyy HH:mm")
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-bank me-2"></i>
+                                From Account
+                            </th>
+                            <td>
+                                @Model.Account!.AccountNumber
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-person me-2"></i>
+                                To (Name)
+                            </th>
+                            <td>
+                                @Model.OtherPartyName
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-credit-card me-2"></i>
+                                To (Account / Number)
+                            </th>
+                            <td>
+                                @Model.OtherPartyAccount
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-card-text me-2"></i>
+                                Details
+                            </th>
+                            <td>
+                                @Model.Description
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-wallet2 me-2"></i>
+                                Balance After
+                            </th>
+                            <td class="balance-value">
+                                Rs @Model.BalanceAfter.ToString("N2")
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="receipt-footer no-print">
+
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+
+                    <button type="button"
+                            class="btn btn-print"
+                            onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>
+                        Print Receipt
+                    </button>
+
+                    <a class="btn-accounts"
+                       asp-controller="Account"
+                       asp-action="Index">
+                        <i class="bi bi-bank me-2"></i>
+                        My Accounts
+                    </a>
+
+                    <a class="btn-transfer"
+                       asp-action="Transfer">
+                        <i class="bi bi-arrow-left-right me-2"></i>
+                        New Transfer
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="text-center thank-you">
+                <i class="bi bi-shield-check me-1"></i>
+                Thank you for banking with SmartBank.
+                Keep this receipt for your records.
+            </div>
+
+        </div>
+    </div>
+</div>

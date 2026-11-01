@@ -1,0 +1,450 @@
+﻿@model SmartBank.ViewModels.RequestsViewModel
+
+@{
+    ViewData["Title"] = "Requests & Invoices";
+}
+
+<style>
+    .requests-page {
+        background: #f4f7fb;
+        min-height: 85vh;
+        padding: 30px 12px;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #102a43, #173f5f);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 14px;
+        border-bottom: 4px solid #d4a84f;
+        margin-bottom: 28px;
+    }
+
+        .page-header h3 {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #dce6ef;
+            font-size: 13px;
+            margin: 0;
+        }
+
+    .btn-gold {
+        background: #d4a84f;
+        color: #102a43;
+        border: 1px solid #d4a84f;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-gold:hover {
+            background: #e2bd72;
+            color: #102a43;
+        }
+
+    .btn-outline-gold {
+        background: transparent;
+        color: #f2cc7b;
+        border: 1px solid #d4a84f;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-outline-gold:hover {
+            background: #d4a84f;
+            color: #102a43;
+        }
+
+    .request-card {
+        background: white;
+        border-radius: 13px;
+        box-shadow: 0 5px 22px rgba(16, 42, 67, .07);
+        overflow: hidden;
+        margin-bottom: 28px;
+    }
+
+    .section-header {
+        padding: 19px 23px;
+        background: #fff;
+        border-bottom: 1px solid #e8edf2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .section-header h5 {
+            color: #102a43;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .section-header i {
+            color: #d4a84f;
+            margin-right: 8px;
+        }
+
+        .section-header small {
+            color: #718096;
+        }
+
+    .table-responsive {
+        width: 100%;
+    }
+
+    .request-table {
+        margin: 0;
+        min-width: 850px;
+    }
+
+        .request-table thead th {
+            background: #f1f5f9;
+            color: #173f5f;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            padding: 14px 12px;
+            white-space: nowrap;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .request-table tbody td {
+            padding: 14px 12px;
+            vertical-align: middle;
+            color: #425466;
+            font-size: 13px;
+        }
+
+        .request-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+    .amount-text {
+        color: #173f5f;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .type-text {
+        color: #173f5f;
+        font-weight: 600;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #edf2f7;
+        color: #425466;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .btn-pay {
+        background: #102a43;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 13px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-pay:hover {
+            background: #173f5f;
+            color: white;
+        }
+
+    .btn-reject {
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        background: white;
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+        .btn-reject:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 35px 15px !important;
+        color: #8492a3 !important;
+    }
+
+        .empty-state i {
+            display: block;
+            font-size: 28px;
+            color: #d4a84f;
+            margin-bottom: 8px;
+        }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 22px 18px;
+        }
+
+        .page-header-content {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 18px;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-gold,
+        .btn-outline-gold {
+            font-size: 12px;
+            padding: 9px 12px;
+        }
+
+        .section-header {
+            padding: 16px;
+        }
+    }
+</style>
+
+<div class="requests-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center page-header-content">
+
+            <div>
+                <h3>
+                    <i class="bi bi-receipt-cutoff me-2"></i>
+                    Payment Requests & Invoices
+                </h3>
+                <p>Manage your received and sent payment requests.</p>
+            </div>
+
+            <div class="header-actions">
+                <a class="btn-gold"
+                   asp-action="CreateRequest"
+                   asp-route-kind="Request">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Payment Request
+                </a>
+
+                <a class="btn-outline-gold"
+                   asp-action="CreateRequest"
+                   asp-route-kind="Invoice">
+                    <i class="bi bi-file-earmark-plus me-1"></i>
+                    Digital Invoice
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Received Requests -->
+    <div class="request-card">
+
+        <div class="section-header">
+            <div>
+                <h5>
+                    <i class="bi bi-inbox-fill"></i>
+                    Received Requests
+                </h5>
+                <small>Payments requested from you</small>
+            </div>
+
+            <span class="status-badge">
+                @Model.Received.Count Received
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover request-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>From</th>
+                        <th>Description</th>
+                        <th>Due Date</th>
+                        <th class="text-end">Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var r in Model.Received)
+                    {
+                        <tr>
+                            <td>
+                                @r.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td class="type-text">
+                                @r.Kind @r.InvoiceNumber
+                            </td>
+
+                            <td>
+                                @r.RequesterCustomer!.FullName
+                            </td>
+
+                            <td>
+                                @r.Description
+                            </td>
+
+                            <td>
+                                @(r.DueDate?.ToString("dd MMM yyyy") ?? "-")
+                            </td>
+
+                            <td class="text-end amount-text">
+                                Rs @r.Amount.ToString("N2")
+                            </td>
+
+                            <td>
+                                <span class="status-badge">
+                                    @r.Status
+                                </span>
+                            </td>
+
+                            <td class="text-nowrap">
+                                @if (r.Status == "Pending")
+                                {
+                                    <a class="btn-pay"
+                                       asp-action="PayRequest"
+                                       asp-route-id="@r.Id">
+                                        <i class="bi bi-credit-card me-1"></i>
+                                        Pay
+                                    </a>
+
+                                    <form asp-action="RejectRequest"
+                                          method="post"
+                                          class="d-inline">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@r.Id" />
+
+                                        <button type="submit"
+                                                class="btn-reject">
+                                            <i class="bi bi-x-circle me-1"></i>
+                                            Reject
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.Received.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                Nothing to pay.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sent Requests -->
+    <div class="request-card">
+
+        <div class="section-header">
+            <div>
+                <h5>
+                    <i class="bi bi-send-fill"></i>
+                    Sent Requests
+                </h5>
+                <small>Payment requests created by you</small>
+            </div>
+
+            <span class="status-badge">
+                @Model.Sent.Count Sent
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover request-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>To</th>
+                        <th>Description</th>
+                        <th>Due Date</th>
+                        <th class="text-end">Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var r in Model.Sent)
+                    {
+                        <tr>
+                            <td>
+                                @r.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td class="type-text">
+                                @r.Kind @r.InvoiceNumber
+                            </td>
+
+                            <td>
+                                @r.PayerCustomer!.FullName
+                            </td>
+
+                            <td>
+                                @r.Description
+                            </td>
+
+                            <td>
+                                @(r.DueDate?.ToString("dd MMM yyyy") ?? "-")
+                            </td>
+
+                            <td class="text-end amount-text">
+                                Rs @r.Amount.ToString("N2")
+                            </td>
+
+                            <td>
+                                <span class="status-badge">
+                                    @r.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.Sent.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="bi bi-send"></i>
+                                You have not sent any request.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

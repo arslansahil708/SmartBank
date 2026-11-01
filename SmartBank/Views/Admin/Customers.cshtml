@@ -1,0 +1,457 @@
+﻿@model List<Customer>
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<style>
+    body {
+        background: #f1f5ff;
+    }
+
+    .customers-container {
+        max-width: 1400px;
+        margin: 35px auto;
+        padding: 15px;
+    }
+
+    .customers-card {
+        background: white;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 8px 30px rgba(8, 35, 75, 0.09);
+        border: 1px solid #e0e8f8;
+    }
+
+    .customers-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        border-bottom: 5px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .customers-header h2 {
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .customers-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .header-icon {
+        font-size: 48px;
+        color: #f3c65e;
+    }
+
+    .search-box {
+        background: #f7f9ff;
+        border: 1px solid #e0e8f8;
+        padding: 20px;
+        border-radius: 14px;
+        margin-bottom: 25px;
+    }
+
+        .search-box .form-control {
+            border-radius: 9px;
+            padding: 12px;
+            border: 1px solid #d5deed;
+        }
+
+            .search-box .form-control:focus {
+                border-color: #d5a63b;
+                box-shadow: 0 0 0 3px rgba(213, 166, 59, 0.12);
+            }
+
+    .btn-search {
+        background: #087b46;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 24px;
+        font-weight: 600;
+    }
+
+        .btn-search:hover {
+            background: #056238;
+            color: white;
+        }
+
+    .table-heading {
+        color: #09244d;
+        font-weight: 700;
+        margin-bottom: 17px;
+    }
+
+    .table-wrapper {
+        border: 1px solid #dce5f7;
+        border-radius: 13px;
+        overflow-x: auto;
+    }
+
+    .customers-table {
+        margin-bottom: 0;
+        min-width: 1050px;
+    }
+
+        .customers-table thead {
+            background: #092b59;
+            color: white;
+        }
+
+        .customers-table th {
+            padding: 16px 13px;
+            font-size: 13px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .customers-table td {
+            padding: 15px 13px;
+            vertical-align: middle;
+            color: #344563;
+        }
+
+        .customers-table tbody tr:hover {
+            background: #f2f6ff;
+        }
+
+    .customer-name {
+        color: #09244d;
+        font-weight: 700;
+    }
+
+    .customer-email {
+        color: #345b91;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    .customer-mobile,
+    .customer-cnic {
+        white-space: nowrap;
+        font-size: 13px;
+    }
+
+    .account-count {
+        display: inline-block;
+        background: #edf3ff;
+        color: #123b78;
+        border: 1px solid #d6e2ff;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-weight: 700;
+    }
+
+    .join-date {
+        color: #64748b;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background: #d9f7e7;
+        color: #087b46;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-suspended {
+        background: #ffe1e1;
+        color: #c62828;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .btn-suspend {
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        background: white;
+        border-radius: 8px;
+        padding: 7px 13px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+        .btn-suspend:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .btn-activate {
+        border: 1px solid #087b46;
+        color: #087b46;
+        background: white;
+        border-radius: 8px;
+        padding: 7px 13px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+        .btn-activate:hover {
+            background: #087b46;
+            color: white;
+        }
+
+    .empty-state {
+        padding: 45px 15px !important;
+        color: #718096 !important;
+        text-align: center;
+    }
+
+        .empty-state i {
+            display: block;
+            font-size: 42px;
+            color: #b5c4dc;
+            margin-bottom: 10px;
+        }
+
+    @@media (max-width: 768px) {
+        .customers-card {
+            padding: 16px;
+        }
+
+        .customers-header {
+            padding: 22px;
+        }
+
+            .customers-header h2 {
+                font-size: 23px;
+            }
+
+        .header-icon {
+            font-size: 38px;
+        }
+    }
+</style>
+
+<div class="container customers-container">
+
+    <div class="customers-card">
+
+        <!-- Header -->
+        <div class="customers-header">
+
+            <div class="d-flex align-items-center gap-4">
+
+                <i class="bi bi-people-fill header-icon"></i>
+
+                <div>
+                    <h2>Customers Management</h2>
+
+                    <p>
+                        <i class="bi bi-shield-check me-1"></i>
+                        Manage customer profiles and account access
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Search -->
+        <div class="search-box">
+
+            <form method="get">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-9">
+
+                        <label class="form-label fw-semibold text-secondary">
+                            Search Customers
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search text-primary"></i>
+                            </span>
+
+                            <input name="q"
+                                   value="@ViewBag.Q"
+                                   class="form-control"
+                                   placeholder="Search name, email, mobile or CNIC..." />
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button type="submit" class="btn btn-search w-100">
+                            <i class="bi bi-search me-2"></i>
+                            Search Customers
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- Table Heading -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h5 class="table-heading mb-0">
+                <i class="bi bi-person-lines-fill text-warning me-2"></i>
+                Customer Records
+            </h5>
+
+            <span class="badge rounded-pill text-bg-light border px-3 py-2">
+                @Model.Count() Customers
+            </span>
+
+        </div>
+
+        <!-- Customer Table -->
+        <div class="table-wrapper">
+
+            <table class="table customers-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Email Address</th>
+                        <th>Mobile</th>
+                        <th>CNIC</th>
+                        <th>Accounts</th>
+                        <th>Joined Date</th>
+                        <th>Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <span class="customer-name">
+                                    <i class="bi bi-person-circle text-primary me-1"></i>
+                                    @c.FullName
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="customer-email">
+                                    @c.Email
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="customer-mobile">
+                                    @c.Phone
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="customer-cnic">
+                                    @c.Cnic
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="account-count">
+                                    <i class="bi bi-bank me-1"></i>
+                                    @c.Accounts.Count
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="join-date">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    @c.CreatedAt.ToString("dd MMM yyyy")
+                                </span>
+                            </td>
+
+                            <td>
+
+                                @if (c.IsActive)
+                                {
+                                    <span class="status-active">
+                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-suspended">
+                                        <i class="bi bi-x-circle-fill me-1"></i>
+                                        Suspended
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <form asp-action="ToggleCustomer" method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@c.Id" />
+
+                                    @if (c.IsActive)
+                                    {
+                                        <button type="submit" class="btn-suspend">
+                                            <i class="bi bi-lock-fill me-1"></i>
+                                            Suspend
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn-activate">
+                                            <i class="bi bi-unlock-fill me-1"></i>
+                                            Activate
+                                        </button>
+                                    }
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="empty-state">
+
+                                <i class="bi bi-person-x"></i>
+
+                                <strong>No Customers Found</strong>
+
+                                <div class="small mt-1">
+                                    No customer matches your search.
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

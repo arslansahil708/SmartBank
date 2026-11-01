@@ -1,0 +1,341 @@
+﻿@model SmartBank.ViewModels.MobileLoadViewModel
+
+@{
+    ViewData["Title"] = "Mobile Load";
+}
+
+<style>
+    .load-page {
+        padding: 15px 0 35px;
+    }
+
+    .bank-card {
+        border: 1px solid #e5eaf0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 8px 25px rgba(16, 42, 67, .08);
+    }
+
+    .bank-card-header {
+        background: #102a43;
+        color: white;
+        padding: 23px;
+        border-bottom: 4px solid #d4a84f;
+    }
+
+        .bank-card-header h4 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .bank-card-header p {
+            color: #dbe5ef;
+            font-size: 13px;
+            margin: 0;
+        }
+
+    .bank-card-body {
+        padding: 28px;
+    }
+
+    .load-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(212, 168, 79, .16);
+        color: #d4a84f;
+        border-radius: 12px;
+        font-size: 24px;
+    }
+
+    .form-label {
+        color: #102a43;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #dce3eb;
+        border-radius: 9px;
+        padding: 11px 13px;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #d4a84f;
+            box-shadow: 0 0 0 .2rem rgba(212, 168, 79, .15);
+        }
+
+    .input-group-text {
+        background: #f4f7fb;
+        color: #102a43;
+        border-color: #dce3eb;
+        font-weight: 600;
+    }
+
+    .btn-bank {
+        background: #102a43;
+        color: white;
+        border: 1px solid #102a43;
+        border-radius: 8px;
+        padding: 11px 24px;
+        font-weight: 600;
+    }
+
+        .btn-bank:hover {
+            background: #173f5f;
+            color: white;
+        }
+
+    .btn-cancel {
+        border: 1px solid #dce3eb;
+        color: #475569;
+        border-radius: 8px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: #f4f7fb;
+            color: #102a43;
+        }
+
+    .demo-notice {
+        background: #fff8e8;
+        border: 1px solid #f1dfb5;
+        border-left: 4px solid #d4a84f;
+        border-radius: 8px;
+        padding: 12px 15px;
+        color: #795b20;
+        font-size: 13px;
+    }
+
+    .security-note {
+        background: #f4f7fb;
+        border-left: 4px solid #d4a84f;
+        border-radius: 7px;
+        padding: 13px 15px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .field-validation-error {
+        font-size: 12px;
+    }
+
+    @@media (max-width: 576px) {
+        .bank-card-body {
+            padding: 19px;
+        }
+
+        .bank-card-header {
+            padding: 18px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+            .form-actions a,
+            .form-actions button {
+                width: 100%;
+                text-align: center;
+            }
+    }
+</style>
+
+<div class="container load-page">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <div class="bank-card">
+
+                <!-- Header -->
+                <div class="bank-card-header">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="load-icon">
+                            <i class="bi bi-phone-fill"></i>
+                        </div>
+
+                        <div>
+                            <h4>Mobile Load</h4>
+                            <p>Recharge your mobile number through SmartBank.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Form -->
+                <div class="bank-card-body">
+
+                    <div class="demo-notice mb-4">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>Demo Mode:</strong>
+                        No real mobile operator is contacted. This is a portfolio project simulation.
+                    </div>
+
+                    <form asp-action="MobileLoad" method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger py-2">
+                        </div>
+
+                        <!-- Account -->
+                        <div class="mb-4">
+
+                            <label asp-for="FromAccountId" class="form-label">
+                                <i class="bi bi-bank me-1"></i>
+                                From Account
+                            </label>
+
+                            <select asp-for="FromAccountId"
+                                    asp-items="@((SelectList)ViewBag.Accounts)"
+                                    class="form-select">
+
+                                <option value="">-- Select account --</option>
+
+                            </select>
+
+                            <span asp-validation-for="FromAccountId"
+                                  class="text-danger field-validation-error">
+                            </span>
+
+                        </div>
+
+                        <!-- Operator -->
+                        <div class="mb-4">
+
+                            <label asp-for="Operator" class="form-label">
+                                <i class="bi bi-broadcast me-1"></i>
+                                Mobile Operator
+                            </label>
+
+                            <select asp-for="Operator"
+                                    asp-items="@((SelectList)ViewBag.Operators)"
+                                    class="form-select">
+
+                                <option value="">-- Select operator --</option>
+
+                            </select>
+
+                            <span asp-validation-for="Operator"
+                                  class="text-danger field-validation-error">
+                            </span>
+
+                        </div>
+
+                        <!-- Mobile Number -->
+                        <div class="mb-4">
+
+                            <label asp-for="MobileNumber" class="form-label">
+                                <i class="bi bi-phone me-1"></i>
+                                Mobile Number
+                            </label>
+
+                            <input asp-for="MobileNumber"
+                                   class="form-control"
+                                   placeholder="03001234567"
+                                   inputmode="numeric" />
+
+                            <span asp-validation-for="MobileNumber"
+                                  class="text-danger field-validation-error">
+                            </span>
+
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="mb-4">
+
+                            <label asp-for="Amount" class="form-label">
+                                <i class="bi bi-currency-rupee me-1"></i>
+                                Load Amount
+                            </label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">Rs.</span>
+
+                                <input asp-for="Amount"
+                                       type="number"
+                                       step="1"
+                                       class="form-control"
+                                       placeholder="Enter amount" />
+                            </div>
+
+                            <span asp-validation-for="Amount"
+                                  class="text-danger field-validation-error">
+                            </span>
+
+                        </div>
+
+                        <!-- PIN -->
+                        <div class="mb-4">
+
+                            <label asp-for="Pin" class="form-label">
+                                <i class="bi bi-shield-lock me-1"></i>
+                                Transaction PIN
+                            </label>
+
+                            <input asp-for="Pin"
+                                   type="password"
+                                   class="form-control"
+                                   maxlength="4"
+                                   autocomplete="off"
+                                   placeholder="Enter 4-digit PIN"
+                                   inputmode="numeric" />
+
+                            <span asp-validation-for="Pin"
+                                  class="text-danger field-validation-error">
+                            </span>
+
+                            <small class="text-muted">
+                                Enter your SmartBank transaction PIN.
+                            </small>
+
+                        </div>
+
+                        <!-- Security Notice -->
+                        <div class="security-note mb-4">
+                            <i class="bi bi-shield-check text-success me-2"></i>
+                            Verify the mobile number and operator before submitting your load request.
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex flex-wrap gap-2 form-actions">
+
+                            <button type="submit" class="btn btn-bank">
+                                <i class="bi bi-send-fill me-2"></i>
+                                Send Load
+                            </button>
+
+                            <a class="btn-cancel"
+                               asp-controller="Account"
+                               asp-action="Index">
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

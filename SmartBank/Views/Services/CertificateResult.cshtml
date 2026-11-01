@@ -1,0 +1,484 @@
+﻿@model SmartBank.ViewModels.CertificateViewModel
+
+@{
+    ViewData["Title"] = "Certificate";
+}
+
+<style>
+    .certificate-page {
+        --navy: #102b46;
+        --gold: #c9a44c;
+        color: #26384a;
+    }
+
+    .certificate-paper {
+        background: #fff;
+        border: 1px solid #e1e6ec;
+        border-radius: 17px;
+        padding: 45px;
+        box-shadow: 0 10px 35px rgba(16,43,70,.09);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .certificate-paper::before {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            border: 1px solid rgba(201,164,76,.45);
+            border-radius: 11px;
+            pointer-events: none;
+        }
+
+    .certificate-inner {
+        position: relative;
+        z-index: 1;
+    }
+
+    .bank-logo {
+        width: 65px;
+        height: 65px;
+        border-radius: 18px;
+        background: #102b46;
+        color: #e6c777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin: 0 auto 13px;
+    }
+
+    .bank-name {
+        color: #102b46;
+        font-size: 30px;
+        font-weight: 850;
+        letter-spacing: 2px;
+    }
+
+    .certificate-heading {
+        color: #102b46;
+        font-weight: 750;
+        letter-spacing: 1px;
+    }
+
+    .gold-line {
+        height: 3px;
+        width: 90px;
+        background: #c9a44c;
+        border-radius: 10px;
+        margin: 15px auto 25px;
+    }
+
+    .certificate-text {
+        font-size: 15px;
+        line-height: 2;
+        color: #46586a;
+        text-align: justify;
+    }
+
+        .certificate-text strong {
+            color: #102b46;
+        }
+
+    .summary-heading {
+        color: #102b46;
+        font-weight: 750;
+        font-size: 15px;
+        margin-bottom: 13px;
+    }
+
+    .certificate-table {
+        width: 100%;
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        overflow: hidden;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .certificate-table th {
+            background: #f3f6f9;
+            color: #344b60;
+            font-weight: 650;
+            font-size: 13px;
+            padding: 15px;
+            width: 60%;
+        }
+
+        .certificate-table td {
+            color: #102b46;
+            font-size: 14px;
+            font-weight: 750;
+            padding: 15px;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .certificate-table th,
+        .certificate-table td {
+            border-bottom: 1px solid #e5eaf0;
+        }
+
+        .certificate-table tr:last-child th,
+        .certificate-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    .balance-row th,
+    .balance-row td {
+        background: #fbf7eb;
+        color: #80652f;
+    }
+
+    .certificate-number {
+        background: #f4f6f9;
+        border-left: 4px solid #c9a44c;
+        padding: 13px 16px;
+        border-radius: 8px;
+        color: #526477;
+        font-size: 13px;
+        word-break: break-word;
+    }
+
+        .certificate-number strong {
+            color: #102b46;
+        }
+
+    .certificate-footer {
+        border-top: 1px solid #e8edf2;
+        padding-top: 18px;
+        margin-top: 25px;
+        color: #84919f;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .certificate-stamp {
+        width: 92px;
+        height: 92px;
+        border: 2px solid #c9a44c;
+        color: #a98537;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 800;
+        transform: rotate(-12deg);
+        margin-left: auto;
+    }
+
+    .btn-gold {
+        background: #c9a44c;
+        color: #102b46;
+        border: none;
+        font-weight: 750;
+        border-radius: 9px;
+        padding: 10px 20px;
+    }
+
+        .btn-gold:hover {
+            background: #b58d35;
+            color: #102b46;
+        }
+
+    @@media(max-width:576px) {
+        .certificate-paper {
+            padding: 27px 22px;
+        }
+
+        .bank-name {
+            font-size: 25px;
+        }
+
+        .certificate-text {
+            font-size: 13px;
+        }
+
+        .certificate-table th,
+        .certificate-table td {
+            padding: 12px 9px;
+            font-size: 12px;
+        }
+    }
+
+    @@media print {
+        @@page {
+            size: A4;
+            margin: 12mm;
+        }
+
+        body {
+            background: white !important;
+        }
+
+        .no-print,
+        nav,
+        header,
+        footer,
+        .sidebar {
+            display: none !important;
+        }
+
+        .container,
+        .container-fluid,
+        .certificate-page,
+        .certificate-paper {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+            .certificate-paper::before {
+                inset: 8px;
+            }
+
+        .certificate-table th {
+            background: #f3f6f9 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .balance-row th,
+        .balance-row td {
+            background: #fbf7eb !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+
+<div class="container py-4 certificate-page">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+            <!-- Certificate -->
+            <div class="certificate-paper">
+
+                <div class="certificate-inner">
+
+                    <!-- Bank Header -->
+                    <div class="text-center">
+
+                        <div class="bank-logo">
+                            <i class="bi bi-bank"></i>
+                        </div>
+
+                        <div class="bank-name">
+                            SmartBank
+                        </div>
+
+                        <p class="text-muted small mb-0">
+                            DIGITAL BANKING SERVICES
+                        </p>
+
+                        <div class="gold-line"></div>
+
+                        <h4 class="certificate-heading">
+                            DIGITAL TRANSACTION CERTIFICATE
+                        </h4>
+
+                        <p class="text-muted small">
+                            Account Activity Confirmation
+                        </p>
+
+                    </div>
+
+                    <!-- Certificate Text -->
+                    <div class="mt-4">
+
+                        <p class="certificate-text">
+
+                            This is to certify that the account
+
+                            <strong>
+                                @Model.Account.AccountNumber
+                            </strong>
+
+                            (@Model.Account.AccountType)
+
+                            held by
+
+                            <strong>
+                                @Model.HolderName
+                            </strong>
+
+                            had the following transaction activity
+                            during the period from
+
+                            <strong>
+                                @Model.FromDate.ToString("dd MMM yyyy")
+                            </strong>
+
+                            to
+
+                            <strong>
+                                @Model.ToDate.ToString("dd MMM yyyy")
+                            </strong>.
+
+                        </p>
+
+                    </div>
+
+                    <!-- Transaction Summary -->
+                    <div class="mt-4">
+
+                        <h6 class="summary-heading">
+                            <i class="bi bi-bar-chart-line me-2"></i>
+                            Transaction Summary
+                        </h6>
+
+                        <div class="table-responsive">
+
+                            <table class="certificate-table">
+
+                                <tbody>
+
+                                    <tr>
+                                        <th>
+                                            <i class="bi bi-arrow-left-right me-2"></i>
+                                            Number of Transactions
+                                        </th>
+
+                                        <td>
+                                            @Model.Count
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>
+                                            <i class="bi bi-arrow-up-right-circle me-2"></i>
+                                            Total Debit
+                                        </th>
+
+                                        <td>
+                                            Rs @Model.TotalDebit.ToString("N2")
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>
+                                            <i class="bi bi-arrow-down-left-circle me-2"></i>
+                                            Total Credit
+                                        </th>
+
+                                        <td>
+                                            Rs @Model.TotalCredit.ToString("N2")
+                                        </td>
+                                    </tr>
+
+                                    <tr class="balance-row">
+                                        <th>
+                                            <i class="bi bi-wallet2 me-2"></i>
+                                            Current Balance
+                                        </th>
+
+                                        <td>
+                                            Rs @Model.Account.Balance.ToString("N2")
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Certificate Information -->
+                    <div class="mt-4">
+
+                        <div class="certificate-number mb-3">
+
+                            <div>
+                                <i class="bi bi-patch-check me-2"></i>
+                                Certificate Number:
+                                <strong>@Model.CertificateNo</strong>
+                            </div>
+
+                            <div class="mt-2">
+                                <i class="bi bi-calendar-check me-2"></i>
+                                Issued On:
+                                <strong>
+                                    @DateTime.Now.ToString("dd MMM yyyy HH:mm")
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="certificate-footer">
+
+                        <div class="row align-items-center">
+
+                            <div class="col-8">
+
+                                <strong style="color:#102b46;">
+                                    SmartBank Digital Banking
+                                </strong>
+
+                                <p class="mb-0 mt-2">
+                                    This certificate is generated electronically
+                                    for informational purposes.
+                                </p>
+
+                                <p class="mb-0 mt-2">
+                                    Practice project: This certificate is not
+                                    an official bank document or legal proof.
+                                </p>
+
+                            </div>
+
+                            <div class="col-4">
+
+                                <div class="certificate-stamp">
+                                    DIGITAL<br />
+                                    CERTIFICATE
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="no-print d-flex flex-wrap justify-content-between gap-2 mt-4">
+
+                <a asp-action="Certificate"
+                   class="btn btn-outline-secondary px-4">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back
+
+                </a>
+
+                <button type="button"
+                        class="btn btn-gold"
+                        onclick="window.print()">
+
+                    <i class="bi bi-printer me-2"></i>
+                    Print Certificate
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

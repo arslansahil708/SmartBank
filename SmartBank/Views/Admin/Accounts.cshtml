@@ -1,0 +1,427 @@
+﻿@model List<Account>
+
+@{
+    ViewData["Title"] = "Accounts";
+}
+
+<style>
+    body {
+        background: #f1f5ff;
+    }
+
+    .accounts-container {
+        max-width: 1350px;
+        margin: 35px auto;
+        padding: 15px;
+    }
+
+    .accounts-card {
+        background: white;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 8px 30px rgba(8, 35, 75, 0.09);
+        border: 1px solid #e0e8f8;
+    }
+
+    .accounts-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        border-bottom: 5px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .accounts-header h2 {
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .accounts-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .header-icon {
+        font-size: 48px;
+        color: #f3c65e;
+    }
+
+    .search-box {
+        background: #f7f9ff;
+        border: 1px solid #e0e8f8;
+        padding: 20px;
+        border-radius: 14px;
+        margin-bottom: 25px;
+    }
+
+        .search-box .form-control {
+            border-radius: 9px;
+            padding: 12px;
+            border: 1px solid #d5deed;
+        }
+
+            .search-box .form-control:focus {
+                border-color: #d5a63b;
+                box-shadow: 0 0 0 3px rgba(213, 166, 59, 0.12);
+            }
+
+    .btn-search {
+        background: #087b46;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 24px;
+        font-weight: 600;
+    }
+
+        .btn-search:hover {
+            background: #056238;
+            color: white;
+        }
+
+    .table-heading {
+        color: #09244d;
+        font-weight: 700;
+        margin-bottom: 17px;
+    }
+
+    .table-wrapper {
+        border: 1px solid #dce5f7;
+        border-radius: 13px;
+        overflow-x: auto;
+    }
+
+    .accounts-table {
+        margin-bottom: 0;
+        min-width: 950px;
+    }
+
+        .accounts-table thead {
+            background: #092b59;
+            color: white;
+        }
+
+        .accounts-table th {
+            padding: 16px 13px;
+            font-size: 13px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .accounts-table td {
+            padding: 15px 13px;
+            vertical-align: middle;
+            color: #344563;
+        }
+
+        .accounts-table tbody tr:hover {
+            background: #f2f6ff;
+        }
+
+    .account-number {
+        color: #123b78;
+        font-weight: 700;
+    }
+
+    .holder-name {
+        font-weight: 600;
+        color: #09244d;
+    }
+
+    .balance {
+        font-weight: 700;
+        color: #087b46;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background: #d9f7e7;
+        color: #087b46;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-suspended {
+        background: #ffe1e1;
+        color: #c62828;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .btn-suspend {
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        background: white;
+        border-radius: 8px;
+        padding: 7px 13px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+        .btn-suspend:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .btn-activate {
+        border: 1px solid #087b46;
+        color: #087b46;
+        background: white;
+        border-radius: 8px;
+        padding: 7px 13px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+        .btn-activate:hover {
+            background: #087b46;
+            color: white;
+        }
+
+    .empty-state {
+        padding: 45px 15px !important;
+        color: #718096 !important;
+        text-align: center;
+    }
+
+        .empty-state i {
+            display: block;
+            font-size: 42px;
+            color: #b5c4dc;
+            margin-bottom: 10px;
+        }
+
+    @@media (max-width: 768px) {
+        .accounts-card {
+            padding: 16px;
+        }
+
+        .accounts-header {
+            padding: 22px;
+        }
+
+            .accounts-header h2 {
+                font-size: 23px;
+            }
+
+        .header-icon {
+            font-size: 38px;
+        }
+    }
+</style>
+
+<div class="container accounts-container">
+
+    <div class="accounts-card">
+
+        <!-- Header -->
+        <div class="accounts-header">
+
+            <div class="d-flex align-items-center gap-4">
+
+                <i class="bi bi-bank header-icon"></i>
+
+                <div>
+                    <h2>Accounts Management</h2>
+
+                    <p>
+                        <i class="bi bi-shield-check me-1"></i>
+                        Manage customer accounts and their status
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Search -->
+        <div class="search-box">
+
+            <form method="get">
+
+                <div class="row g-3 align-items-center">
+
+                    <div class="col-md-9">
+
+                        <label class="form-label fw-semibold text-secondary">
+                            Search Accounts
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search text-primary"></i>
+                            </span>
+
+                            <input name="q"
+                                   value="@ViewBag.Q"
+                                   class="form-control"
+                                   placeholder="Search account number or holder name" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label d-none d-md-block">&nbsp;</label>
+
+                        <button type="submit" class="btn btn-search w-100">
+                            <i class="bi bi-search me-2"></i>
+                            Search
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- Table Heading -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h5 class="table-heading mb-0">
+                <i class="bi bi-people-fill text-warning me-2"></i>
+                Customer Accounts
+            </h5>
+
+            <span class="badge rounded-pill text-bg-light border px-3 py-2">
+                @Model.Count() Accounts
+            </span>
+
+        </div>
+
+        <!-- Accounts Table -->
+        <div class="table-wrapper">
+
+            <table class="table accounts-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Account No</th>
+                        <th>Account Holder</th>
+                        <th>Account Type</th>
+                        <th class="text-end">Balance</th>
+                        <th>Opened Date</th>
+                        <th>Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <span class="account-number">
+                                    @a.AccountNumber
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="holder-name">
+                                    @(a.Customer?.FullName ?? "N/A")
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-light text-primary border">
+                                    @a.AccountType
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+                                <span class="balance">
+                                    Rs @a.Balance.ToString("N2")
+                                </span>
+                            </td>
+
+                            <td>
+                                <i class="bi bi-calendar3 text-muted me-1"></i>
+                                @a.OpenedAt.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+
+                                @if (a.IsActive)
+                                {
+                                    <span class="status-active">
+                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-suspended">
+                                        <i class="bi bi-x-circle-fill me-1"></i>
+                                        Suspended
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td class="text-center">
+
+                                <form asp-action="ToggleAccount" method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@a.Id" />
+
+                                    @if (a.IsActive)
+                                    {
+                                        <button type="submit" class="btn-suspend">
+                                            <i class="bi bi-lock-fill me-1"></i>
+                                            Suspend
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn-activate">
+                                            <i class="bi bi-unlock-fill me-1"></i>
+                                            Activate
+                                        </button>
+                                    }
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="empty-state">
+
+                                <i class="bi bi-folder-x"></i>
+
+                                <strong>No Accounts Found</strong>
+
+                                <div class="small mt-1">
+                                    No account matches your search.
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

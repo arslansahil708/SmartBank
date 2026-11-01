@@ -1,0 +1,342 @@
+﻿@model SmartBank.ViewModels.TransferViewModel
+
+@{
+    ViewData["Title"] = "Transfer Money";
+    var beneficiaries = (List<Beneficiary>)ViewBag.Beneficiaries;
+}
+
+<style>
+    .transfer-page {
+        background: #f4f7fb;
+        min-height: 85vh;
+        padding: 35px 12px;
+    }
+
+    .transfer-card {
+        max-width: 680px;
+        margin: auto;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(16, 42, 67, .09);
+    }
+
+    .transfer-header {
+        background: linear-gradient(135deg, #102a43, #173f5f);
+        color: white;
+        padding: 25px 30px;
+        border-bottom: 4px solid #d4a84f;
+    }
+
+        .transfer-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .transfer-header p {
+            color: #dce6ef;
+            font-size: 13px;
+            margin: 8px 0 0;
+        }
+
+    .transfer-body {
+        padding: 30px;
+    }
+
+    .section-title {
+        color: #102a43;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        color: #173f5f;
+        font-weight: 600;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        padding: 11px 13px;
+        border: 1px solid #dce3eb;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #d4a84f;
+            box-shadow: 0 0 0 3px rgba(212, 168, 79, .15);
+        }
+
+    .receiver-info {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 7px;
+    }
+
+    .transfer-info {
+        background: #edf6ff;
+        border: 1px solid #d5e7f7;
+        border-radius: 9px;
+        padding: 13px 15px;
+        color: #285579;
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+
+    .security-note {
+        background: #fff9e9;
+        border: 1px solid #f0dfb5;
+        border-radius: 8px;
+        padding: 12px 15px;
+        color: #80621e;
+        font-size: 13px;
+        margin-top: 20px;
+    }
+
+    .btn-transfer {
+        background: #102a43;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 11px 24px;
+        font-weight: 600;
+    }
+
+        .btn-transfer:hover {
+            background: #173f5f;
+            color: white;
+        }
+
+    .btn-cancel {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 11px 16px;
+    }
+
+        .btn-cancel:hover {
+            color: #102a43;
+        }
+
+    @@media (max-width: 576px) {
+        .transfer-body {
+            padding: 22px 17px;
+        }
+
+        .transfer-header {
+            padding: 22px 20px;
+        }
+
+        .btn-transfer {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="transfer-page">
+    <div class="transfer-card">
+
+        <!-- Header -->
+        <div class="transfer-header">
+            <h3>
+                <i class="bi bi-arrow-left-right me-2"></i>
+                Transfer Money
+            </h3>
+
+            <p>Same Bank Transfer - Send money securely to another SmartBank account.</p>
+        </div>
+
+        <div class="transfer-body">
+
+            <div class="transfer-info">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Transfer money to another active SmartBank account.
+                Please verify the receiver details before sending.
+            </div>
+
+            <h5 class="section-title">
+                <i class="bi bi-send me-2"></i>
+                Transfer Details
+            </h5>
+
+            <form asp-action="Transfer" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <!-- From Account -->
+                <div class="mb-3">
+                    <label asp-for="FromAccountId" class="form-label">
+                        <i class="bi bi-bank me-1"></i>
+                        Select Your Account
+                    </label>
+
+                    <select asp-for="FromAccountId"
+                            asp-items="@((SelectList)ViewBag.Accounts)"
+                            class="form-select">
+                        <option value="">-- Select account --</option>
+                    </select>
+
+                    <span asp-validation-for="FromAccountId"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Saved Beneficiary -->
+                @if (beneficiaries.Any())
+                {
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-person-check me-1"></i>
+                            Saved Beneficiary
+                        </label>
+
+                        <select id="benSelect" class="form-select">
+                            <option value="">-- Choose (optional) --</option>
+
+                            @foreach (var b in beneficiaries)
+                            {
+                                <option value="@b.AccountNumber">
+                                    @b.Name (@b.AccountNumber)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                }
+
+                <!-- Receiver Account -->
+                <div class="mb-3">
+                    <label asp-for="ToAccountNumber" class="form-label">
+                        <i class="bi bi-person-vcard me-1"></i>
+                        Receiver Account Number
+                    </label>
+
+                    <input asp-for="ToAccountNumber"
+                           class="form-control"
+                           placeholder="e.g. SB1234567890" />
+
+                    <div id="holderName" class="form-text receiver-info"></div>
+
+                    <span asp-validation-for="ToAccountNumber"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Amount -->
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label">
+                        <i class="bi bi-cash-stack me-1"></i>
+                        Transfer Amount (Rs)
+                    </label>
+
+                    <input asp-for="Amount"
+                           type="number"
+                           step="0.01"
+                           class="form-control"
+                           placeholder="Enter amount" />
+
+                    <span asp-validation-for="Amount"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Note -->
+                <div class="mb-3">
+                    <label asp-for="Note" class="form-label">
+                        <i class="bi bi-card-text me-1"></i>
+                        Payment Note
+                    </label>
+
+                    <input asp-for="Note"
+                           class="form-control"
+                           placeholder="Optional" />
+
+                    <span asp-validation-for="Note"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- PIN -->
+                <div class="mb-4">
+                    <label asp-for="Pin" class="form-label">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Transaction PIN
+                    </label>
+
+                    <input asp-for="Pin"
+                           class="form-control"
+                           maxlength="4"
+                           autocomplete="off"
+                           placeholder="Enter 4-digit PIN" />
+
+                    <span asp-validation-for="Pin"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <button type="submit" class="btn btn-transfer">
+                        <i class="bi bi-send-fill me-2"></i>
+                        Send Money
+                    </button>
+
+                    <a class="btn-cancel"
+                       asp-controller="Account"
+                       asp-action="Index">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Cancel
+                    </a>
+                </div>
+
+                <div class="security-note">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Verify the receiver's account number before confirming.
+                    Never share your transaction PIN.
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Account number likh kar bahar click karo to receiver ka naam aa jata hai
+        function lookup() {
+            var number = $("#ToAccountNumber").val().trim();
+            var box = $("#holderName");
+
+            if (!number) {
+                box.text("");
+                return;
+            }
+
+            $.getJSON("@Url.Action("LookupAccount", "Payment")", { number: number }, function (res) {
+                if (res.found) {
+                    box.removeClass("text-danger")
+                        .addClass("text-success")
+                        .text("Account holder: " + res.name);
+                } else {
+                    box.removeClass("text-success")
+                        .addClass("text-danger")
+                        .text("Account not found");
+                }
+            });
+        }
+
+        $("#ToAccountNumber").on("blur", lookup);
+
+        // Saved beneficiary choose karo to account number khud bhar jata hai
+        $("#benSelect").on("change", function () {
+            $("#ToAccountNumber").val($(this).val());
+            lookup();
+        });
+    </script>
+}

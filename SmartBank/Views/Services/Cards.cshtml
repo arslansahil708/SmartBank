@@ -1,0 +1,465 @@
+﻿@model List<DebitCard>
+
+@{
+    ViewData["Title"] = "My Cards";
+}
+
+<style>
+    .cards-page {
+        --navy: #102b46;
+        --gold: #c9a44c;
+        color: #26384a;
+    }
+
+    .cards-header {
+        background: linear-gradient(120deg, #102b46, #234e70);
+        color: white;
+        border-radius: 17px;
+        padding: 27px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .cards-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 25px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            right: -35px;
+            top: -65px;
+        }
+
+    .header-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 15px;
+        background: rgba(255,255,255,.13);
+        color: #e6c777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .debit-card {
+        min-height: 220px;
+        border-radius: 18px;
+        padding: 23px;
+        color: white;
+        background: linear-gradient(130deg, #102b46, #1d4666 65%, #315b72);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(16,43,70,.18);
+    }
+
+        .debit-card::before {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border: 25px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            right: -60px;
+            top: -80px;
+        }
+
+        .debit-card::after {
+            content: "";
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border: 18px solid rgba(201,164,76,.12);
+            border-radius: 50%;
+            right: 40px;
+            bottom: -90px;
+        }
+
+        .debit-card.blocked {
+            background: linear-gradient(130deg, #343b45, #59616b);
+        }
+
+    .card-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-chip {
+        width: 39px;
+        height: 29px;
+        border: 1px solid #e4c778;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #e8d49a, #b89543);
+        margin-top: 20px;
+        position: relative;
+    }
+
+        .card-chip::before,
+        .card-chip::after {
+            content: "";
+            position: absolute;
+            background: rgba(90,70,30,.35);
+        }
+
+        .card-chip::before {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+        }
+
+        .card-chip::after {
+            height: 100%;
+            width: 1px;
+            left: 50%;
+        }
+
+    .card-number {
+        font-size: 21px;
+        letter-spacing: 2px;
+        font-weight: 650;
+        margin-top: 17px;
+        margin-bottom: 20px;
+    }
+
+    .card-label {
+        color: rgba(255,255,255,.65);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .card-expiry {
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .card-brand {
+        color: #e6c777;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    .card-details {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 5px 18px rgba(16,43,70,.05);
+    }
+
+    .detail-label {
+        font-size: 11px;
+        color: #8996a4;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .detail-value {
+        color: #102b46;
+        font-weight: 650;
+        font-size: 13px;
+        word-break: break-word;
+    }
+
+    .status-active {
+        background: #e8f6ef;
+        color: #238456;
+        border-radius: 7px;
+        padding: 7px 11px;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .status-blocked {
+        background: #fff0ef;
+        color: #c54c45;
+        border-radius: 7px;
+        padding: 7px 11px;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .card-action {
+        border-top: 1px solid #edf0f3;
+        padding-top: 16px;
+        margin-top: 16px;
+    }
+
+    .btn-gold {
+        background: #c9a44c;
+        color: #102b46;
+        border: none;
+        font-weight: 700;
+    }
+
+        .btn-gold:hover {
+            background: #b58d35;
+            color: #102b46;
+        }
+
+    .empty-card {
+        background: white;
+        border: 1px dashed #cbd5df;
+        border-radius: 17px;
+        padding: 55px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 75px;
+        height: 75px;
+        border-radius: 20px;
+        background: #eaf0f6;
+        color: #173c5c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+        margin: 0 auto 17px;
+    }
+
+    @@media(max-width:576px) {
+        .cards-header {
+            padding: 21px;
+        }
+
+        .debit-card {
+            padding: 19px;
+        }
+
+        .card-number {
+            font-size: 18px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4 cards-page">
+
+    <!-- Header -->
+    <div class="cards-header mb-4">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 position-relative"
+             style="z-index:1;">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="header-icon">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+
+                <div>
+                    <h3 class="fw-bold mb-1">My Debit Cards</h3>
+                    <p class="text-white-50 mb-0">
+                        Manage your SmartBank debit cards securely.
+                    </p>
+                </div>
+
+            </div>
+
+            <a asp-action="New"
+               asp-route-type="Debit Card"
+               class="btn btn-gold px-4 py-2">
+                <i class="bi bi-plus-circle me-1"></i>
+                Request New Card
+            </a>
+
+        </div>
+
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                <i class="bi bi-credit-card"></i>
+            </div>
+
+            <h5 class="fw-bold" style="color:#102b46;">
+                No Debit Card Yet
+            </h5>
+
+            <p class="text-muted mb-4">
+                You haven't requested a debit card.
+                Request one to access your account conveniently.
+            </p>
+
+            <a asp-action="New"
+               asp-route-type="Debit Card"
+               class="btn btn-gold px-4 py-2">
+                <i class="bi bi-plus-circle me-1"></i>
+                Request Debit Card
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+
+            @foreach (var c in Model)
+            {
+                <div class="col-xl-4 col-md-6">
+
+                    <div class="debit-card mb-3 @(c.Status == "Blocked" ? "blocked" : "")">
+
+                        <div class="card-content">
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <span class="fw-bold">
+                                    <i class="bi bi-bank me-2"></i>
+                                    SMARTBANK
+                                </span>
+
+                                <span class="card-brand">
+                                    <i class="bi bi-wifi"></i>
+                                </span>
+
+                            </div>
+
+                            <div class="card-chip"></div>
+
+                            <div class="card-number">
+                                @c.MaskedNumber
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-end">
+
+                                <div>
+                                    <div class="card-label">Expiry Date</div>
+                                    <div class="card-expiry">@c.Expiry</div>
+                                </div>
+
+                                <div class="text-end">
+                                    <div class="card-label">Card Type</div>
+                                    <div class="card-expiry">DEBIT</div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Card Details -->
+                    <div class="card-details">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                            <h6 class="fw-bold mb-0" style="color:#102b46;">
+                                Card Details
+                            </h6>
+
+                            @if (c.Status == "Blocked")
+                            {
+                                <span class="status-blocked">
+                                    <i class="bi bi-lock-fill me-1"></i>
+                                    Blocked
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-active">
+                                    <i class="bi bi-check-circle-fill me-1"></i>
+                                    @c.Status
+                                </span>
+                            }
+
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="detail-label mb-1">
+                                Linked Account
+                            </div>
+
+                            <div class="detail-value">
+                                <i class="bi bi-bank me-1"></i>
+                                @c.Account!.AccountNumber
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-6">
+                                <div class="detail-label mb-1">
+                                    Card Number
+                                </div>
+
+                                <div class="detail-value">
+                                    @c.MaskedNumber
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="detail-label mb-1">
+                                    Expiry
+                                </div>
+
+                                <div class="detail-value">
+                                    @c.Expiry
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card-action">
+
+                            <form asp-action="ToggleCard" method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@c.Id" />
+
+                                @if (c.Status == "Active")
+                                {
+                                    <button type="submit"
+                                            class="btn btn-outline-danger btn-sm w-100"
+                                            onclick="return confirm('Are you sure you want to block this card?');">
+
+                                        <i class="bi bi-lock me-1"></i>
+                                        Block Card
+
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit"
+                                            class="btn btn-outline-success btn-sm w-100"
+                                            onclick="return confirm('Are you sure you want to unblock this card?');">
+
+                                        <i class="bi bi-unlock me-1"></i>
+                                        Unblock Card
+
+                                    </button>
+                                }
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+    <!-- Security Notice -->
+    <div class="alert mt-4 mb-0"
+         style="background:#fbf7eb;border:1px solid #f0e5c9;color:#806b3e;border-radius:12px;">
+
+        <i class="bi bi-shield-lock-fill me-2"></i>
+
+        <strong>Security Tip:</strong>
+        If your debit card is lost or stolen, block it immediately
+        and contact your bank.
+
+    </div>
+
+</div>

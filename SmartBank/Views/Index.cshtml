@@ -1,0 +1,61 @@
+﻿@model SmartBank.ViewModels.InvestmentSummaryViewModel
+@{
+    ViewData["Title"] = "Investment Summary";
+}
+
+<h3 class="mb-3">Investment Summary</h3>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Balance in accounts</div>
+                <h4 class="text-success">Rs @Model.AccountsTotal.ToString("N2")</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Saved in plans</div>
+                <h4 class="text-success">Rs @Model.PlansTotal.ToString("N2")</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Active term deposits</div>
+                <h4 class="text-success">Rs @Model.DepositsTotal.ToString("N2")</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Expected profit on deposits</div>
+                <h4 class="text-success">Rs @Model.ExpectedProfit.ToString("N2")</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Loan still to pay</div>
+                <h4 class="text-danger">Rs @Model.LoanOutstanding.ToString("N2")</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-success">
+            <div class="card-body">
+                <div class="text-muted">Total worth (accounts + plans + deposits - loan)</div>
+                <h4>Rs @((Model.AccountsTotal + Model.PlansTotal + Model.DepositsTotal - Model.LoanOutstanding).ToString("N2"))</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-success" asp-action="Plans">Savings Plans</a>
+<a class="btn btn-success" asp-action="Deposits">Term Deposits</a>
+<a class="btn btn-outline-success" asp-action="Calculator">Profit Calculator</a>

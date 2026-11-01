@@ -1,0 +1,294 @@
+﻿@model SmartBank.ViewModels.LoanPayViewModel
+
+@{
+    ViewData["Title"] = "Pay Installment";
+    var inst = (LoanInstallment)ViewBag.Installment;
+}
+
+<style>
+    .payment-page {
+        max-width: 700px;
+        margin: auto;
+    }
+
+    .payment-header {
+        background: linear-gradient(135deg, #101f3d, #203c68);
+        color: white;
+        border-radius: 16px;
+        padding: 26px;
+    }
+
+    .payment-card {
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(16, 31, 61, .05);
+    }
+
+    .payment-icon {
+        width: 48px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5edda;
+        color: #a47b25;
+        border-radius: 13px;
+        font-size: 22px;
+    }
+
+    .payment-label {
+        color: #78869a;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .payment-value {
+        color: #172b4d;
+        font-weight: 600;
+    }
+
+    .amount-box {
+        background: #f8f9fc;
+        border: 1px solid #e8edf4;
+        border-radius: 13px;
+        padding: 20px;
+    }
+
+    .amount-value {
+        color: #172b4d;
+        font-size: 27px;
+        font-weight: 700;
+    }
+
+    .section-title {
+        color: #172b4d;
+        font-weight: 700;
+    }
+
+    .form-label {
+        color: #263b5b;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 45px;
+        border-radius: 9px;
+        border-color: #dce2eb;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #c49a3a;
+            box-shadow: 0 0 0 .2rem rgba(196, 154, 58, .15);
+        }
+
+    .btn-gold {
+        background: #c49a3a;
+        color: #101f3d;
+        border: none;
+        font-weight: 700;
+        padding: 11px 20px;
+        border-radius: 9px;
+    }
+
+        .btn-gold:hover {
+            background: #ad852c;
+            color: white;
+        }
+
+    @@media (max-width: 576px) {
+        .payment-header {
+            padding: 20px;
+        }
+
+        .amount-value {
+            font-size: 23px;
+        }
+    }
+</style>
+
+<div class="payment-page">
+
+    <!-- Header -->
+    <div class="payment-header mb-4">
+        <div class="d-flex align-items-center gap-3">
+
+            <div class="payment-icon">
+                <i class="bi bi-credit-card"></i>
+            </div>
+
+            <div>
+                <div class="small text-white-50 mb-1">
+                    SmartBank / Loan Repayment
+                </div>
+
+                <h3 class="fw-bold mb-1">Pay Installment</h3>
+
+                <p class="text-white-50 mb-0">
+                    Make your loan installment payment securely.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Installment Details -->
+    <div class="payment-card p-4 mb-4">
+
+        <h5 class="section-title mb-4">
+            <i class="bi bi-receipt me-2 text-warning"></i>
+            Installment Details
+        </h5>
+
+        <div class="row g-4">
+
+            <div class="col-6">
+                <div class="payment-label">Loan Type</div>
+                <div class="payment-value">
+                    @inst.Loan?.LoanType Loan
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="payment-label">Loan Reference</div>
+                <div class="payment-value">
+                    #@inst.LoanId
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="payment-label">Installment Number</div>
+                <div class="payment-value">
+                    #@inst.No
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="payment-label">Due Date</div>
+                <div class="payment-value">
+                    @inst.DueDate.ToString("dd MMM yyyy")
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="my-4" />
+
+        <div class="amount-box text-center">
+            <div class="payment-label">Total Payment Amount</div>
+
+            <div class="amount-value">
+                Rs @inst.Amount.ToString("N2")
+            </div>
+
+            <span class="badge bg-warning text-dark mt-2">
+                <i class="bi bi-calendar-check me-1"></i>
+                Loan Installment
+            </span>
+        </div>
+
+    </div>
+
+    <!-- Payment Form -->
+    <div class="payment-card p-4 mb-4">
+
+        <h5 class="section-title mb-2">
+            <i class="bi bi-wallet2 me-2 text-warning"></i>
+            Payment Information
+        </h5>
+
+        <p class="text-muted small mb-4">
+            Select your bank account and enter your transaction PIN.
+        </p>
+
+        <form asp-action="Pay" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="InstallmentId" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger"
+                 role="alert">
+            </div>
+
+            <!-- Account -->
+            <div class="mb-4">
+
+                <label asp-for="FromAccountId" class="form-label">
+                    <i class="bi bi-bank me-1 text-warning"></i>
+                    Select Payment Account
+                </label>
+
+                <select asp-for="FromAccountId"
+                        asp-items="@((SelectList)ViewBag.Accounts)"
+                        class="form-select">
+
+                    <option value="">-- Select account --</option>
+
+                </select>
+
+                <span asp-validation-for="FromAccountId"
+                      class="text-danger small">
+                </span>
+
+            </div>
+
+            <!-- PIN -->
+            <div class="mb-4">
+
+                <label asp-for="Pin" class="form-label">
+                    <i class="bi bi-shield-lock me-1 text-warning"></i>
+                    Transaction PIN
+                </label>
+
+                <input asp-for="Pin"
+                       type="password"
+                       class="form-control"
+                       maxlength="4"
+                       inputmode="numeric"
+                       autocomplete="off"
+                       placeholder="Enter your 4-digit PIN" />
+
+                <span asp-validation-for="Pin"
+                      class="text-danger small">
+                </span>
+
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Your PIN is required to authorize this payment.
+                </small>
+
+            </div>
+
+            <!-- Security Notice -->
+            <div class="alert alert-light border small">
+                <i class="bi bi-shield-check text-success me-2"></i>
+                Please verify the installment amount and selected account before confirming payment.
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex flex-wrap gap-2">
+
+                <button type="submit" class="btn btn-gold flex-grow-1">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Pay Rs @inst.Amount.ToString("N2")
+                </button>
+
+                <a class="btn btn-outline-secondary"
+                   asp-action="Details"
+                   asp-route-id="@inst.LoanId">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

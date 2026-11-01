@@ -1,0 +1,378 @@
+﻿@model List<TermDeposit>
+
+@{
+    ViewData["Title"] = "Term Deposits";
+}
+
+<style>
+    .deposit-page {
+        padding: 20px 0;
+    }
+
+    .deposit-header {
+        background: linear-gradient(120deg, #071d40, #123f78);
+        border-radius: 14px;
+        padding: 25px;
+        color: white;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+        .deposit-header h3 {
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .deposit-header p {
+            color: #d5e1f2;
+            margin: 0;
+            font-size: 13px;
+        }
+
+    .btn-gold {
+        background: #e5b84b;
+        color: #09244d;
+        border: none;
+        border-radius: 8px;
+        padding: 11px 18px;
+        font-weight: 750;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .btn-gold:hover {
+            background: #f2ca68;
+            color: #09244d;
+        }
+
+    .deposit-card {
+        background: white;
+        border: 1px solid #e4eaf2;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(8, 35, 75, 0.06);
+        overflow: hidden;
+    }
+
+    .deposit-card-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #e9edf4;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+        .deposit-card-header h5 {
+            color: #09244d;
+            font-weight: 750;
+            margin: 0;
+        }
+
+    .deposit-count {
+        background: #edf3ff;
+        color: #1451a0;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .deposit-table {
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+
+        .deposit-table thead th {
+            background: #f1f5fb;
+            color: #09244d;
+            font-size: 12px;
+            font-weight: 750;
+            padding: 15px 13px;
+            border-bottom: 1px solid #dfe7f1;
+        }
+
+        .deposit-table tbody td {
+            padding: 15px 13px;
+            color: #40516a;
+            font-size: 13px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .deposit-table tbody tr:hover {
+            background: #f8faff;
+        }
+
+    .amount-text {
+        color: #09244d;
+        font-weight: 750;
+    }
+
+    .maturity-amount {
+        color: #087b46;
+        font-weight: 800;
+    }
+
+    .rate-badge {
+        background: #fff5d9;
+        color: #946c00;
+        border-radius: 20px;
+        padding: 6px 10px;
+        font-weight: 750;
+        font-size: 12px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        background: #d9f5e5;
+        color: #087b46;
+        border-radius: 20px;
+        padding: 6px 11px;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .btn-certificate {
+        color: #1451a0;
+        border: 1px solid #cbdaf0;
+        background: #f3f7ff;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 7px 10px;
+        text-decoration: none;
+    }
+
+        .btn-certificate:hover {
+            background: #e3edff;
+            color: #09244d;
+        }
+
+    .btn-redeem {
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 7px 10px;
+    }
+
+    .empty-state {
+        padding: 55px 20px !important;
+        text-align: center;
+        white-space: normal;
+    }
+
+        .empty-state i {
+            font-size: 42px;
+            color: #c5d2e4;
+        }
+
+        .empty-state h6 {
+            color: #09244d;
+            font-weight: 750;
+            margin-top: 12px;
+        }
+
+        .empty-state p {
+            color: #7b8798;
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+
+    @@media (max-width: 576px) {
+        .deposit-header {
+            padding: 20px;
+        }
+
+            .deposit-header .btn-gold {
+                width: 100%;
+                text-align: center;
+            }
+
+        .deposit-card-header {
+            padding: 15px;
+        }
+    }
+</style>
+
+<div class="container deposit-page">
+
+    <!-- Page Header -->
+    <div class="deposit-header">
+
+        <div>
+            <h3>
+                <i class="bi bi-safe2 me-2"></i>
+                Term Deposits
+            </h3>
+
+            <p>
+                Manage your savings, maturity dates and certificates.
+            </p>
+        </div>
+
+        <a class="btn-gold" asp-action="NewDeposit">
+            <i class="bi bi-plus-circle me-2"></i>
+            New Term Deposit
+        </a>
+
+    </div>
+
+    <!-- Deposits Table -->
+    <div class="deposit-card">
+
+        <div class="deposit-card-header">
+
+            <h5>
+                <i class="bi bi-wallet2 text-warning me-2"></i>
+                My Term Deposits
+            </h5>
+
+            <span class="deposit-count">
+                @Model.Count Deposit(s)
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table deposit-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Start Date</th>
+                        <th>Maturity Date</th>
+                        <th class="text-end">Amount</th>
+                        <th>Period</th>
+                        <th>Profit Rate</th>
+                        <th class="text-end">At Maturity</th>
+                        <th>Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var d in Model)
+                    {
+                        bool matured = DateTime.Today >= d.MaturityDate;
+
+                        <tr>
+
+                            <td>
+                                <i class="bi bi-calendar3 text-muted me-1"></i>
+                                @d.StartDate.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+                                <i class="bi bi-calendar-check text-muted me-1"></i>
+                                @d.MaturityDate.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td class="text-end amount-text">
+                                Rs @d.Amount.ToString("N2")
+                            </td>
+
+                            <td>
+                                @d.Months Months
+                            </td>
+
+                            <td>
+                                <span class="rate-badge">
+                                    @d.ProfitRate.ToString("0.##")%
+                                </span>
+                            </td>
+
+                            <td class="text-end maturity-amount">
+                                Rs @d.MaturityAmount.ToString("N2")
+                            </td>
+
+                            <td>
+                                <span class="status-badge">
+                                    @d.Status
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+
+                                <div class="d-flex gap-2 justify-content-center">
+
+                                    <a class="btn-certificate"
+                                       asp-action="Certificate"
+                                       asp-route-id="@d.Id">
+
+                                        <i class="bi bi-file-earmark-text me-1"></i>
+                                        Certificate
+
+                                    </a>
+
+                                    @if (d.Status == "Active")
+                                    {
+                                        <form asp-action="Redeem"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('@(matured ? "Withdraw with profit?" : "Maturity date has not come. You will get only your original amount, no profit. Continue?")');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@d.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-redeem @(matured ? "btn-success" : "btn-outline-danger")">
+
+                                                <i class="bi bi-cash-coin me-1"></i>
+
+                                                @(matured ? "Redeem" : "Close Early")
+
+                                            </button>
+
+                                        </form>
+                                    }
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="empty-state">
+
+                                <i class="bi bi-piggy-bank"></i>
+
+                                <h6>No Term Deposits Yet</h6>
+
+                                <p>
+                                    You have not created any term deposit.
+                                    Start saving by opening a new deposit.
+                                </p>
+
+                                <a asp-action="NewDeposit"
+                                   class="btn-gold d-inline-block mt-3">
+
+                                    <i class="bi bi-plus-circle me-1"></i>
+                                    Open New Deposit
+
+                                </a>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

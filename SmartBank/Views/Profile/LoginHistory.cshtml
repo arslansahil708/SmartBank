@@ -1,0 +1,429 @@
+﻿@model List<AuditLog>
+
+@{
+    ViewData["Title"] = "Login History";
+
+    var total = Model?.Count ?? 0;
+    var successful = Model?.Count(a => a.Action == "Login") ?? 0;
+    var failed = total - successful;
+}
+
+<style>
+    .history-page {
+        --navy: #102b46;
+        --gold: #c9a44c;
+        color: #26384a;
+    }
+
+    .history-header {
+        background: linear-gradient(120deg, #102b46, #234e70);
+        color: white;
+        border-radius: 17px;
+        padding: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .history-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 24px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            right: -35px;
+            top: -60px;
+        }
+
+    .history-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 15px;
+        background: rgba(255,255,255,.13);
+        color: #e6c777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .history-summary {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 15px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 4px 15px rgba(16,43,70,.04);
+        transition: .2s;
+    }
+
+        .history-summary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(16,43,70,.08);
+        }
+
+    .summary-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .icon-navy {
+        background: #eaf0f6;
+        color: #173c5c;
+    }
+
+    .icon-green {
+        background: #e8f6ef;
+        color: #238456;
+    }
+
+    .icon-red {
+        background: #fff0ef;
+        color: #c54c45;
+    }
+
+    .summary-label {
+        color: #84919f;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .summary-number {
+        color: #102b46;
+        font-size: 27px;
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .history-panel {
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(16,43,70,.05);
+    }
+
+    .history-panel-heading {
+        padding: 20px 23px;
+        border-bottom: 1px solid #edf0f3;
+    }
+
+        .history-panel-heading h5 {
+            color: #102b46;
+            font-weight: 750;
+        }
+
+    .history-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .history-table thead th {
+            background: #f4f6f9;
+            color: #526477;
+            font-size: 12px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            padding: 15px 18px;
+            white-space: nowrap;
+            border-bottom: 1px solid #e8edf2;
+        }
+
+        .history-table tbody td {
+            padding: 16px 18px;
+            color: #425569;
+            font-size: 13px;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .history-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .history-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .status-success {
+        background: #e8f6ef;
+        color: #238456;
+        padding: 7px 11px;
+        border-radius: 7px;
+        font-weight: 700;
+        font-size: 11px;
+    }
+
+    .status-failed {
+        background: #fff0ef;
+        color: #c54c45;
+        padding: 7px 11px;
+        border-radius: 7px;
+        font-weight: 700;
+        font-size: 11px;
+    }
+
+    .date-icon {
+        color: #c9a44c;
+        margin-right: 7px;
+    }
+
+    .history-note {
+        background: #fbf7eb;
+        border: 1px solid #f0e5c9;
+        color: #806b3e;
+        padding: 15px;
+        border-radius: 11px;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+    }
+
+    .empty-icon {
+        width: 72px;
+        height: 72px;
+        background: #f0f3f7;
+        color: #7890a6;
+        border-radius: 20px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+    }
+
+    @@media (max-width: 576px) {
+        .history-header {
+            padding: 21px;
+        }
+
+        .history-summary {
+            padding: 16px;
+        }
+
+        .history-panel-heading {
+            padding: 17px;
+        }
+
+        .history-table thead th,
+        .history-table tbody td {
+            padding: 13px 12px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4 history-page">
+
+    <!-- Header -->
+    <div class="history-header mb-4">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 position-relative"
+             style="z-index:1;">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="history-icon">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+
+                <div>
+                    <h3 class="fw-bold mb-1">Login History</h3>
+
+                    <p class="text-white-50 mb-0">
+                        Review your recent account login activities.
+                    </p>
+                </div>
+
+            </div>
+
+            <span class="badge rounded-pill px-3 py-2"
+                  style="background:#c9a44c;color:#102b46;">
+                <i class="bi bi-shield-check me-1"></i>
+                Account Security
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4 col-6">
+            <div class="history-summary">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="summary-label">Total Attempts</span>
+
+                    <div class="summary-icon icon-navy">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+                </div>
+
+                <h3 class="summary-number">@total</h3>
+                <small class="text-muted">Login records</small>
+
+            </div>
+        </div>
+
+        <div class="col-md-4 col-6">
+            <div class="history-summary">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="summary-label">Successful</span>
+
+                    <div class="summary-icon icon-green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+
+                <h3 class="summary-number">@successful</h3>
+                <small class="text-muted">Successful logins</small>
+
+            </div>
+        </div>
+
+        <div class="col-md-4 col-6">
+            <div class="history-summary">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="summary-label">Failed</span>
+
+                    <div class="summary-icon icon-red">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+                </div>
+
+                <h3 class="summary-number">@failed</h3>
+                <small class="text-muted">Failed attempts</small>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- History Table -->
+    <div class="history-panel">
+
+        <div class="history-panel-heading d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+            <div>
+                <h5 class="mb-1">
+                    <i class="bi bi-shield-lock me-2"></i>
+                    Recent Login Activities
+                </h5>
+
+                <small class="text-muted">
+                    Showing your latest login attempts
+                </small>
+            </div>
+
+            <span class="badge rounded-pill px-3 py-2"
+                  style="background:#eaf0f6;color:#173c5c;">
+                Last 50 Attempts
+            </span>
+
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+
+                <table class="table history-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Result</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var a in Model)
+                        {
+                            <tr>
+
+                                <td class="text-nowrap">
+                                    <i class="bi bi-calendar3 date-icon"></i>
+                                    @a.CreatedAt.ToString("dd MMM yyyy")
+                                    <div class="small text-muted ms-4">
+                                        @a.CreatedAt.ToString("HH:mm:ss")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @if (a.Action == "Login")
+                                    {
+                                        <span class="status-success">
+                                            <i class="bi bi-check-circle-fill me-1"></i>
+                                            Success
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-failed">
+                                            <i class="bi bi-x-circle-fill me-1"></i>
+                                            Failed
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="text-break">
+                                        @a.Details
+                                    </span>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+
+                <h5 class="fw-bold" style="color:#102b46;">
+                    No Login Records
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Your login activities will appear here.
+                </p>
+
+            </div>
+        }
+
+    </div>
+
+    <!-- Security Notice -->
+    <div class="history-note mt-3">
+
+        <i class="bi bi-shield-exclamation me-2"></i>
+
+        <strong>Security Notice:</strong>
+        Showing the last 50 attempts. If you see a login you do not
+        recognise, change your password immediately.
+
+    </div>
+
+</div>

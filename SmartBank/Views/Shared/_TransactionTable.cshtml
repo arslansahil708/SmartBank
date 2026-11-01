@@ -1,0 +1,31 @@
+﻿@model IEnumerable<BankTransaction>
+
+<table class="table table-sm table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Reference</th>
+            <th>Details</th>
+            <th class="text-end">Debit</th>
+            <th class="text-end">Credit</th>
+            <th class="text-end">Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.Date.ToString("dd MMM yyyy HH:mm")</td>
+                <td>@t.Reference</td>
+                <td>@t.Description</td>
+                <td class="text-end text-danger">@(t.Type == "Debit" ? t.Amount.ToString("N2") : "")</td>
+                <td class="text-end text-success">@(t.Type == "Credit" ? t.Amount.ToString("N2") : "")</td>
+                <td class="text-end">@t.BalanceAfter.ToString("N2")</td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr><td colspan="6" class="text-center text-muted">No transactions found.</td></tr>
+        }
+    </tbody>
+</table>

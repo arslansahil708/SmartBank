@@ -1,0 +1,346 @@
+﻿@model SmartBank.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    .register-page {
+        min-height: 90vh;
+        padding: 45px 15px;
+        background: linear-gradient(135deg, #eaf2ff, #f8fbff);
+    }
+
+    .register-card {
+        max-width: 1050px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 0.85fr 1.5fr;
+        background: white;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(10, 35, 75, 0.15);
+    }
+
+    .register-left {
+        background: linear-gradient(145deg, #06264f, #104b83);
+        color: white;
+        padding: 45px 35px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .register-icon {
+        font-size: 55px;
+        color: #f5bd42;
+        margin-bottom: 25px;
+    }
+
+    .register-left h2 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+        .register-left h2 span {
+            color: #f5bd42;
+        }
+
+    .register-left p {
+        color: #dce9f8;
+        line-height: 1.8;
+    }
+
+    .register-features {
+        margin-top: 30px;
+        color: #f5bd42;
+        line-height: 2.5;
+        font-weight: 500;
+    }
+
+    .register-right {
+        padding: 40px 45px;
+    }
+
+    .register-heading {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .register-heading h2 {
+            color: #082b57;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .register-heading p {
+            color: #718096;
+        }
+
+    .form-label {
+        color: #17365d;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .register-input {
+        height: 48px;
+        border: 1px solid #d5deea;
+        border-radius: 9px;
+        padding: 10px 13px;
+    }
+
+        .register-input:focus {
+            border-color: #dcae35;
+            box-shadow: 0 0 0 3px rgba(220, 174, 53, 0.15);
+        }
+
+    .register-btn {
+        width: 100%;
+        height: 52px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #e9b83e, #f5ca63);
+        color: #082b57;
+        font-size: 18px;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+
+        .register-btn:hover {
+            background: #dca72e;
+            transform: translateY(-2px);
+        }
+
+    .register-login {
+        text-align: center;
+        margin-top: 22px;
+        color: #718096;
+    }
+
+        .register-login a {
+            color: #1256a0;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .register-login a:hover {
+                color: #d49d20;
+                text-decoration: underline;
+            }
+
+    @@media (max-width: 768px) {
+        .register-card {
+            grid-template-columns: 1fr;
+        }
+
+        .register-left {
+            padding: 30px 25px;
+        }
+
+        .register-right {
+            padding: 30px 22px;
+        }
+    }
+</style>
+
+<div class="register-page">
+
+    <div class="register-card">
+
+        <!-- Left Side -->
+        <div class="register-left">
+
+            <div class="register-icon">
+                <i class="bi bi-bank2"></i>
+            </div>
+
+            <h2>Join <span>SmartBank!</span></h2>
+
+            <p>
+                Open your SmartBank account today and
+                enjoy secure, simple and convenient banking.
+            </p>
+
+            <div class="register-features">
+                <div>
+                    <i class="bi bi-shield-lock-fill"></i>
+                    Secure Banking
+                </div>
+
+                <div>
+                    <i class="bi bi-lightning-fill"></i>
+                    Fast Transactions
+                </div>
+
+                <div>
+                    <i class="bi bi-wallet2"></i>
+                    Easy Account Management
+                </div>
+
+                <div>
+                    <i class="bi bi-headset"></i>
+                    24/7 Banking Access
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Side -->
+        <div class="register-right">
+
+            <div class="register-heading">
+                <h2>Create Account</h2>
+                <p>Fill in your details to get started</p>
+            </div>
+
+            <form asp-action="Register" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="row">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FullName" class="form-label">
+                            Full Name
+                        </label>
+
+                        <input asp-for="FullName"
+                               class="form-control register-input"
+                               placeholder="Enter your full name" />
+
+                        <span asp-validation-for="FullName"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <!-- CNIC -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Cnic" class="form-label">
+                            CNIC Number
+                        </label>
+
+                        <input asp-for="Cnic"
+                               class="form-control register-input"
+                               placeholder="XXXXX-XXXXXXX-X" />
+
+                        <span asp-validation-for="Cnic"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label">
+                            Email Address
+                        </label>
+
+                        <input asp-for="Email"
+                               type="email"
+                               class="form-control register-input"
+                               placeholder="example@email.com"
+                               autocomplete="email" />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Phone" class="form-label">
+                            Phone Number
+                        </label>
+
+                        <input asp-for="Phone"
+                               type="tel"
+                               class="form-control register-input"
+                               placeholder="03XXXXXXXXX" />
+
+                        <span asp-validation-for="Phone"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Password" class="form-label">
+                            Password
+                        </label>
+
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-control register-input"
+                               placeholder="Create password"
+                               autocomplete="new-password" />
+
+                        <span asp-validation-for="Password"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label">
+                            Confirm Password
+                        </label>
+
+                        <input asp-for="ConfirmPassword"
+                               type="password"
+                               class="form-control register-input"
+                               placeholder="Confirm password"
+                               autocomplete="new-password" />
+
+                        <span asp-validation-for="ConfirmPassword"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <!-- PIN -->
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="Pin" class="form-label">
+                            Security PIN
+                        </label>
+
+                        <input asp-for="Pin"
+                               type="password"
+                               inputmode="numeric"
+                               maxlength="4"
+                               class="form-control register-input"
+                               placeholder="Enter 4-digit PIN"
+                               autocomplete="off" />
+
+                        <span asp-validation-for="Pin"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="register-btn">
+                    <i class="bi bi-person-plus-fill me-2"></i>
+                    Create SmartBank Account
+                </button>
+
+                <div class="register-login">
+                    Already have an account?
+                    <a asp-action="Login">Login Here</a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

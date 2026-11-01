@@ -1,0 +1,335 @@
+﻿@model SmartBank.ViewModels.BillViewModel
+
+@{
+    ViewData["Title"] = "Utility Bills";
+}
+
+<style>
+    .bill-page {
+        padding: 30px 15px 45px;
+        background: #f4f7fb;
+        min-height: 80vh;
+    }
+
+    .bill-card {
+        background: #fff;
+        border: 1px solid #e5eaf0;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(16, 42, 67, .09);
+        transition: .3s ease;
+    }
+
+        .bill-card:hover {
+            box-shadow: 0 12px 35px rgba(16, 42, 67, .13);
+        }
+
+    .bill-header {
+        background: linear-gradient(135deg, #102a43, #173f5f);
+        color: white;
+        padding: 25px 28px;
+        border-bottom: 4px solid #d4a84f;
+    }
+
+    .bill-icon {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(212, 168, 79, .17);
+        border: 1px solid rgba(212, 168, 79, .5);
+        border-radius: 14px;
+        color: #e8c477;
+        font-size: 25px;
+    }
+
+    .bill-header h3 {
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .bill-header p {
+        color: #d6e0e9;
+        font-size: 13px;
+        margin: 5px 0 0;
+    }
+
+    .bill-body {
+        padding: 30px;
+    }
+
+    .form-label {
+        color: #102a43;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 46px;
+        border: 1px solid #dce4ed;
+        border-radius: 9px;
+        padding: 10px 13px;
+        font-size: 14px;
+        transition: .2s ease;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #d4a84f;
+            box-shadow: 0 0 0 3px rgba(212, 168, 79, .15);
+        }
+
+        .form-control:hover,
+        .form-select:hover {
+            border-color: #b5c5d5;
+        }
+
+    .form-group {
+        margin-bottom: 21px;
+    }
+
+    .demo-note {
+        background: #fff9eb;
+        border: 1px solid #f0dfb8;
+        border-left: 4px solid #d4a84f;
+        border-radius: 9px;
+        padding: 13px 15px;
+        color: #74591f;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .btn-pay {
+        background: #102a43;
+        color: white;
+        border: 1px solid #102a43;
+        border-radius: 9px;
+        padding: 12px 25px;
+        font-weight: 600;
+        transition: .25s ease;
+    }
+
+        .btn-pay:hover {
+            background: #173f5f;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 13px rgba(16, 42, 67, .2);
+        }
+
+    .btn-history {
+        background: white;
+        color: #102a43;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        padding: 12px 20px;
+        font-weight: 600;
+        transition: .25s ease;
+    }
+
+        .btn-history:hover {
+            background: #f1f5f9;
+            border-color: #102a43;
+            color: #102a43;
+        }
+
+    .validation-summary-errors {
+        background: #fff1f1;
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        color: #b91c1c;
+        font-size: 13px;
+    }
+
+    .field-validation-error {
+        display: block;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .bill-footer {
+        border-top: 1px solid #edf1f5;
+        padding: 15px 30px;
+        background: #fafbfd;
+        color: #718096;
+        font-size: 12px;
+    }
+
+    @@media (max-width: 576px) {
+        .bill-page {
+            padding: 15px 10px 30px;
+        }
+
+        .bill-body {
+            padding: 22px 18px;
+        }
+
+        .bill-header {
+            padding: 20px;
+        }
+
+            .bill-header h3 {
+                font-size: 20px;
+            }
+
+        .bill-actions {
+            flex-direction: column;
+        }
+
+            .bill-actions .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="container bill-page">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="bill-card">
+
+                <!-- Header -->
+                <div class="bill-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bill-icon">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+
+                        <div>
+                            <h3>Utility Bill Payment</h3>
+                            <p>Pay your utility bills securely with SmartBank.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="bill-body">
+
+                    <div class="demo-note">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>Demo Notice:</strong>
+                        No real company is contacted. Enter the amount printed on your bill.
+                    </div>
+
+                    <form asp-action="Bills" method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="FromAccountId"
+                                   class="form-label">
+                            </label>
+
+                            <select asp-for="FromAccountId"
+                                    asp-items="@((SelectList)ViewBag.Accounts)"
+                                    class="form-select">
+                                <option value="">-- Select account --</option>
+                            </select>
+
+                            <span asp-validation-for="FromAccountId"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Company"
+                                   class="form-label">
+                            </label>
+
+                            <select asp-for="Company" class="form-select">
+                                <option value="">-- Select company --</option>
+
+                                @foreach (var group in Bank.Companies)
+                                {
+                                    <optgroup label="@group.Key">
+                                        @foreach (var company in group.Value)
+                                        {
+                                            <option value="@company"
+                                                    selected="@(Model.Company == company)">
+                                                @company
+                                            </option>
+                                        }
+                                    </optgroup>
+                                }
+                            </select>
+
+                            <span asp-validation-for="Company"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ConsumerNumber"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="ConsumerNumber"
+                                   class="form-control" />
+
+                            <span asp-validation-for="ConsumerNumber"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Amount"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Amount"
+                                   type="number"
+                                   step="0.01"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Amount"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Pin"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Pin"
+                                   class="form-control"
+                                   maxlength="4"
+                                   autocomplete="off" />
+
+                            <span asp-validation-for="Pin"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex flex-wrap gap-2 mt-4 bill-actions">
+
+                            <button type="submit" class="btn btn-pay">
+                                <i class="bi bi-shield-check me-2"></i>
+                                Pay Bill
+                            </button>
+
+                            <a class="btn btn-history"
+                               asp-action="BillHistory">
+                                <i class="bi bi-clock-history me-2"></i>
+                                Payment History
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="bill-footer">
+                    <i class="bi bi-lock-fill me-1"></i>
+                    SmartBank Demo Banking System
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,291 @@
+﻿@model SmartBank.Models.Account
+
+@{
+    ViewData["Title"] = "Account Details";
+}
+
+<style>
+    .account-page {
+        min-height: 85vh;
+        padding: 40px 15px;
+        background: linear-gradient(135deg, #eaf2ff, #f8fbff);
+    }
+
+    .account-container {
+        max-width: 950px;
+        margin: auto;
+    }
+
+    .account-header {
+        background: linear-gradient(135deg, #06264f, #104b83);
+        color: white;
+        padding: 35px;
+        border-radius: 18px 18px 0 0;
+    }
+
+        .account-header h2 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .account-header p {
+            color: #dce9f8;
+            margin: 0;
+        }
+
+    .account-icon {
+        font-size: 48px;
+        color: #f5bd42;
+        margin-bottom: 15px;
+    }
+
+    .account-body {
+        background: white;
+        padding: 35px;
+        border-radius: 0 0 18px 18px;
+        box-shadow: 0 12px 35px rgba(10, 35, 75, 0.12);
+    }
+
+    .balance-card {
+        background: linear-gradient(135deg, #082b57, #15558e);
+        color: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+
+        .balance-card small {
+            color: #dce9f8;
+            font-size: 14px;
+        }
+
+        .balance-card h2 {
+            color: #f5bd42;
+            font-size: 34px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+    .detail-item {
+        padding: 18px;
+        border: 1px solid #e5ebf3;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #fbfcff;
+        height: 100%;
+    }
+
+        .detail-item small {
+            display: block;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .detail-item h6 {
+            color: #082b57;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+            word-break: break-word;
+        }
+
+    .status-active {
+        display: inline-block;
+        background: #e1f7e9;
+        color: #168044;
+        padding: 6px 15px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .status-suspended {
+        display: inline-block;
+        background: #fde8e8;
+        color: #c53030;
+        padding: 6px 15px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .back-btn {
+        background: #082b57;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 12px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
+
+        .back-btn:hover {
+            background: #104b83;
+            color: #f5bd42;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 576px) {
+        .account-header,
+        .account-body {
+            padding: 25px 20px;
+        }
+
+        .balance-card h2 {
+            font-size: 27px;
+        }
+    }
+</style>
+
+<div class="account-page">
+
+    <div class="account-container">
+
+        <!-- Header -->
+        <div class="account-header">
+
+            <div class="account-icon">
+                <i class="bi bi-bank2"></i>
+            </div>
+
+            <h2>Account Details</h2>
+
+            <p>
+                View your SmartBank account information
+                and current account status.
+            </p>
+
+        </div>
+
+        <!-- Account Information -->
+        <div class="account-body">
+
+            <!-- Balance -->
+            <div class="balance-card">
+
+                <div>
+                    <i class="bi bi-wallet2 me-2"></i>
+                    <small>Available Account Balance</small>
+                </div>
+
+                <h2>
+                    Rs @Model.Balance.ToString("N2")
+                </h2>
+
+                <small>
+                    Account Number: @Model.AccountNumber
+                </small>
+
+            </div>
+
+            <h5 class="mb-4" style="color:#082b57;font-weight:700;">
+                <i class="bi bi-person-vcard me-2"></i>
+                Account Information
+            </h5>
+
+            <div class="row">
+
+                <!-- Account Holder -->
+                <div class="col-md-6 mb-3">
+                    <div class="detail-item">
+
+                        <small>
+                            <i class="bi bi-person me-2"></i>
+                            Account Holder
+                        </small>
+
+                        <h6>@Model.Customer!.FullName</h6>
+
+                    </div>
+                </div>
+
+                <!-- Account Number -->
+                <div class="col-md-6 mb-3">
+                    <div class="detail-item">
+
+                        <small>
+                            <i class="bi bi-credit-card me-2"></i>
+                            Account Number
+                        </small>
+
+                        <h6>@Model.AccountNumber</h6>
+
+                    </div>
+                </div>
+
+                <!-- Account Type -->
+                <div class="col-md-6 mb-3">
+                    <div class="detail-item">
+
+                        <small>
+                            <i class="bi bi-wallet me-2"></i>
+                            Account Type
+                        </small>
+
+                        <h6>@Model.AccountType</h6>
+
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-6 mb-3">
+                    <div class="detail-item">
+
+                        <small>
+                            <i class="bi bi-shield-check me-2"></i>
+                            Account Status
+                        </small>
+
+                        @if (Model.IsActive)
+                        {
+                            <span class="status-active">
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-suspended">
+                                <i class="bi bi-x-circle-fill me-1"></i>
+                                Suspended
+                            </span>
+                        }
+
+                    </div>
+                </div>
+
+                <!-- Opening Date -->
+                <div class="col-md-6 mb-3">
+                    <div class="detail-item">
+
+                        <small>
+                            <i class="bi bi-calendar-check me-2"></i>
+                            Account Opening Date
+                        </small>
+
+                        <h6>
+                            @Model.OpenedAt.ToString("dd MMM yyyy")
+                        </h6>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-4">
+
+                <a asp-action="Index" class="back-btn">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Back to Accounts
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

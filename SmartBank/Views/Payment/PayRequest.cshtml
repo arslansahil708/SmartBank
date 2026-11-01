@@ -1,0 +1,306 @@
+﻿@model SmartBank.ViewModels.PayRequestViewModel
+
+@{
+    ViewData["Title"] = "Pay Request";
+    var request = (PaymentRequest)ViewBag.Request;
+}
+
+<style>
+    .pay-page {
+        background: #f4f7fb;
+        min-height: 85vh;
+        padding: 35px 12px;
+    }
+
+    .pay-card {
+        max-width: 650px;
+        margin: auto;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(16, 42, 67, .09);
+    }
+
+    .pay-header {
+        background: linear-gradient(135deg, #102a43, #173f5f);
+        color: white;
+        padding: 25px 30px;
+        border-bottom: 4px solid #d4a84f;
+    }
+
+        .pay-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .pay-header p {
+            color: #dce6ef;
+            margin: 7px 0 0;
+            font-size: 14px;
+        }
+
+    .pay-body {
+        padding: 30px;
+    }
+
+    .section-title {
+        color: #102a43;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .request-table {
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 28px;
+    }
+
+        .request-table table {
+            margin: 0;
+        }
+
+        .request-table th {
+            background: #f1f5f9;
+            color: #173f5f;
+            width: 38%;
+            font-weight: 600;
+        }
+
+        .request-table td,
+        .request-table th {
+            padding: 13px 15px;
+            vertical-align: middle;
+        }
+
+    .amount-text {
+        color: #16804a;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .form-label {
+        color: #173f5f;
+        font-weight: 600;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        padding: 11px 13px;
+        border: 1px solid #dce3eb;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #d4a84f;
+            box-shadow: 0 0 0 3px rgba(212, 168, 79, .15);
+        }
+
+    .btn-pay {
+        background: #102a43;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 11px 22px;
+        font-weight: 600;
+    }
+
+        .btn-pay:hover {
+            background: #173f5f;
+            color: white;
+        }
+
+    .btn-cancel {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 11px 18px;
+    }
+
+        .btn-cancel:hover {
+            color: #102a43;
+        }
+
+    .security-note {
+        background: #fff9e9;
+        border: 1px solid #f0dfb5;
+        border-radius: 8px;
+        padding: 12px 15px;
+        color: #80621e;
+        font-size: 13px;
+        margin-top: 20px;
+    }
+
+    @@media (max-width: 576px) {
+        .pay-body {
+            padding: 20px 16px;
+        }
+
+        .pay-header {
+            padding: 22px 20px;
+        }
+
+        .request-table th,
+        .request-table td {
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .btn-pay {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="pay-page">
+    <div class="pay-card">
+
+        <!-- Header -->
+        <div class="pay-header">
+            <h3>
+                <i class="bi bi-wallet2 me-2"></i>
+                Pay @request.Kind
+            </h3>
+            <p>Review payment details and confirm your transaction.</p>
+        </div>
+
+        <div class="pay-body">
+
+            <!-- Request Details -->
+            <h5 class="section-title">
+                <i class="bi bi-receipt me-2"></i>
+                Payment Request Details
+            </h5>
+
+            <div class="request-table">
+                <table class="table table-bordered table-sm">
+                    <tbody>
+                        <tr>
+                            <th>
+                                <i class="bi bi-person me-2"></i>From
+                            </th>
+                            <td>@request.RequesterCustomer!.FullName</td>
+                        </tr>
+
+                        @if (request.Kind == "Invoice")
+                        {
+                            <tr>
+                                <th>
+                                    <i class="bi bi-file-earmark-text me-2"></i>
+                                    Invoice No
+                                </th>
+                                <td>@request.InvoiceNumber</td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-card-text me-2"></i>
+                                Description
+                            </th>
+                            <td>@request.Description</td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Due Date
+                            </th>
+                            <td>@(request.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <i class="bi bi-cash-stack me-2"></i>
+                                Amount
+                            </th>
+                            <td>
+                                <span class="amount-text">
+                                    Rs @request.Amount.ToString("N2")
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Payment Form -->
+            <h5 class="section-title">
+                <i class="bi bi-shield-lock me-2"></i>
+                Confirm Payment
+            </h5>
+
+            <form asp-action="PayRequest" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="FromAccountId" class="form-label">
+                        <i class="bi bi-bank me-1"></i>
+                        Select Payment Account
+                    </label>
+
+                    <select asp-for="FromAccountId"
+                            asp-items="@((SelectList)ViewBag.Accounts)"
+                            class="form-select">
+                        <option value="">-- Select account --</option>
+                    </select>
+
+                    <span asp-validation-for="FromAccountId"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Pin" class="form-label">
+                        <i class="bi bi-key me-1"></i>
+                        Transaction PIN
+                    </label>
+
+                    <input asp-for="Pin"
+                           class="form-control"
+                           maxlength="4"
+                           autocomplete="off"
+                           placeholder="Enter your 4-digit PIN" />
+
+                    <span asp-validation-for="Pin"
+                          class="text-danger">
+                    </span>
+
+                    <small class="text-muted">
+                        Enter your secure transaction PIN.
+                    </small>
+                </div>
+
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <button type="submit" class="btn btn-pay">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Pay Rs @request.Amount.ToString("N2")
+                    </button>
+
+                    <a class="btn-cancel" asp-action="Requests">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Cancel
+                    </a>
+                </div>
+
+                <div class="security-note">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Please verify the payment details before confirming.
+                    Never share your transaction PIN with anyone.
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

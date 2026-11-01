@@ -1,0 +1,314 @@
+﻿@{
+    ViewData["Title"] = "Open Account";
+}
+
+<style>
+    body {
+        background: #f1f5ff;
+    }
+
+    .open-container {
+        max-width: 850px;
+        margin: 55px auto;
+        padding: 15px;
+    }
+
+    .open-card {
+        background: white;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 10px 35px rgba(8, 35, 75, 0.10);
+        border: 1px solid #e0e8f8;
+    }
+
+    .open-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 35px;
+        border-bottom: 5px solid #e7b94f;
+    }
+
+        .open-header h2 {
+            font-weight: 750;
+            margin-bottom: 8px;
+        }
+
+        .open-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .header-icon {
+        font-size: 55px;
+        color: #f3c65e;
+    }
+
+    .open-body {
+        padding: 35px;
+    }
+
+    .section-title {
+        color: #09244d;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .section-description {
+        color: #718096;
+        margin-bottom: 25px;
+    }
+
+    .account-option {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 22px;
+        border: 2px solid #e1e8f5;
+        border-radius: 15px;
+        margin-bottom: 16px;
+        cursor: pointer;
+        transition: 0.2s ease;
+        background: #fff;
+    }
+
+        .account-option:hover {
+            border-color: #d5a63b;
+            background: #fffdf7;
+        }
+
+        .account-option:has(input:checked) {
+            border-color: #d5a63b;
+            background: #fffbef;
+            box-shadow: 0 4px 14px rgba(213, 166, 59, 0.12);
+        }
+
+        .account-option input {
+            width: 20px;
+            height: 20px;
+            accent-color: #b98a22;
+            flex-shrink: 0;
+        }
+
+    .option-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #edf3ff;
+        color: #123b78;
+        border-radius: 13px;
+        font-size: 27px;
+    }
+
+    .option-title {
+        color: #09244d;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .option-description {
+        color: #718096;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    .demo-notice {
+        background: #fff9e9;
+        border: 1px solid #f1d68c;
+        border-radius: 13px;
+        padding: 17px;
+        margin-top: 25px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+        .demo-notice i {
+            color: #bd8b1c;
+            font-size: 23px;
+        }
+
+        .demo-notice strong {
+            color: #775510;
+        }
+
+        .demo-notice p {
+            color: #806a3e;
+            margin: 3px 0 0;
+            font-size: 13px;
+        }
+
+    .btn-open {
+        background: #087b46;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+    }
+
+        .btn-open:hover {
+            background: #056238;
+            color: white;
+        }
+
+    .btn-cancel {
+        background: white;
+        color: #123b78;
+        border: 1px solid #cbd7ea;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: #edf3ff;
+            color: #09244d;
+        }
+
+    @@media (max-width: 576px) {
+        .open-container {
+            margin: 25px auto;
+        }
+
+        .open-header,
+        .open-body {
+            padding: 23px;
+        }
+
+            .open-header h2 {
+                font-size: 24px;
+            }
+
+        .header-icon {
+            font-size: 40px;
+        }
+
+        .account-option {
+            padding: 15px;
+        }
+    }
+</style>
+
+<div class="container open-container">
+
+    <div class="open-card">
+
+        <!-- Header -->
+        <div class="open-header">
+            <div class="d-flex align-items-center gap-4">
+
+                <i class="bi bi-bank header-icon"></i>
+
+                <div>
+                    <h2>Open New Account</h2>
+                    <p>
+                        <i class="bi bi-shield-check me-1"></i>
+                        Start your banking journey with SmartBank
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="open-body">
+
+            <h4 class="section-title">Choose Account Type</h4>
+
+            <p class="section-description">
+                Select the type of bank account you want to open.
+            </p>
+
+            <form asp-action="Open" method="post">
+
+                <!-- Savings Account -->
+                <label class="account-option" for="savings">
+
+                    <input class="form-check-input"
+                           type="radio"
+                           name="accountType"
+                           id="savings"
+                           value="Savings"
+                           checked />
+
+                    <div class="option-icon">
+                        <i class="bi bi-piggy-bank"></i>
+                    </div>
+
+                    <div>
+                        <div class="option-title">
+                            Savings Account
+                        </div>
+
+                        <p class="option-description">
+                            Save money and manage your personal savings.
+                        </p>
+                    </div>
+
+                </label>
+
+                <!-- Current Account -->
+                <label class="account-option" for="current">
+
+                    <input class="form-check-input"
+                           type="radio"
+                           name="accountType"
+                           id="current"
+                           value="Current" />
+
+                    <div class="option-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div>
+                        <div class="option-title">
+                            Current Account
+                        </div>
+
+                        <p class="option-description">
+                            Manage your daily payments and transactions.
+                        </p>
+                    </div>
+
+                </label>
+
+                <!-- Demo Notice -->
+                <div class="demo-notice">
+
+                    <i class="bi bi-info-circle-fill"></i>
+
+                    <div>
+                        <strong>Demo Account Information</strong>
+
+                        <p>
+                            Every new account starts with Rs 10,000
+                            so you can test transfers and other banking features.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex gap-3 flex-wrap mt-4">
+
+                    <button type="submit" class="btn btn-open">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Open Account
+                    </button>
+
+                    <a class="btn btn-cancel" asp-action="Index">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

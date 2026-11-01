@@ -1,0 +1,406 @@
+﻿@model List<Loan>
+
+@{
+    ViewData["Title"] = "Loans";
+
+    var totalLoans = Model.Count;
+    var approvedLoans = Model.Count(l => l.Status == "Approved");
+    var pendingLoans = Model.Count(l => l.Status == "Pending");
+    var rejectedLoans = Model.Count(l => l.Status == "Rejected");
+}
+
+<style>
+    .loan-page {
+        max-width: 1150px;
+        margin: auto;
+    }
+
+    .loan-header {
+        background: linear-gradient(135deg, #101f3d, #203c68);
+        color: white;
+        border-radius: 16px;
+        padding: 28px;
+    }
+
+    .loan-card {
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(16, 31, 61, .05);
+    }
+
+    .loan-stat {
+        background: #f8f9fc;
+        border: 1px solid #edf0f5;
+        border-radius: 12px;
+        padding: 18px;
+        height: 100%;
+    }
+
+    .stat-label {
+        color: #78869a;
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .stat-value {
+        color: #172b4d;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .loan-icon {
+        width: 44px;
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5edda;
+        color: #a47b25;
+        border-radius: 12px;
+        font-size: 21px;
+    }
+
+    .section-title {
+        color: #172b4d;
+        font-weight: 700;
+    }
+
+    .loan-type-card {
+        display: block;
+        height: 100%;
+        padding: 20px;
+        border: 1px solid #e8edf4;
+        border-radius: 13px;
+        text-decoration: none;
+        color: #172b4d;
+        background: white;
+        transition: .2s ease;
+    }
+
+        .loan-type-card:hover {
+            border-color: #c49a3a;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(16, 31, 61, .08);
+            color: #172b4d;
+        }
+
+        .loan-type-card h6 {
+            font-weight: 700;
+            margin-top: 12px;
+            margin-bottom: 5px;
+        }
+
+        .loan-type-card small {
+            color: #78869a;
+        }
+
+    .table thead th {
+        background: #f3f5f9;
+        color: #263b5b;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .btn-gold {
+        background: #c49a3a;
+        color: #101f3d;
+        border: none;
+        font-weight: 600;
+    }
+
+        .btn-gold:hover {
+            background: #ad852c;
+            color: white;
+        }
+
+    @@media (max-width: 576px) {
+        .loan-header {
+            padding: 20px;
+        }
+
+            .loan-header h3 {
+                font-size: 21px;
+            }
+    }
+</style>
+
+<div class="loan-page">
+
+    <!-- Header -->
+    <div class="loan-header mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+            <div>
+                <div class="small text-white-50 mb-2">
+                    <i class="bi bi-bank me-1"></i> SmartBank / Financing
+                </div>
+
+                <h3 class="fw-bold mb-1">Loans and Financing</h3>
+
+                <p class="text-white-50 mb-0">
+                    Manage your loan applications and repayment details.
+                </p>
+            </div>
+
+            <a class="btn btn-light fw-semibold"
+               asp-action="History">
+                <i class="bi bi-clock-history me-1"></i>
+                Repayment History
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-6 col-md-3">
+            <div class="loan-stat">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label">Total Applications</div>
+                        <div class="stat-value">@totalLoans</div>
+                    </div>
+                    <div class="loan-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="loan-stat">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label">Approved</div>
+                        <div class="stat-value text-success">@approvedLoans</div>
+                    </div>
+                    <div class="loan-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="loan-stat">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value text-warning">@pendingLoans</div>
+                    </div>
+                    <div class="loan-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="loan-stat">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-label">Rejected</div>
+                        <div class="stat-value text-danger">@rejectedLoans</div>
+                    </div>
+                    <div class="loan-icon">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Apply for Loan -->
+    <div class="loan-card p-4 mb-4">
+
+        <div class="mb-3">
+            <h5 class="section-title mb-1">
+                <i class="bi bi-plus-circle me-2 text-warning"></i>
+                Apply for a Loan
+            </h5>
+
+            <p class="text-muted small mb-0">
+                Select a financing category to start your application.
+            </p>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-6 col-md-3">
+                <a class="loan-type-card"
+                   asp-action="Apply"
+                   asp-route-type="Car">
+
+                    <div class="loan-icon">
+                        <i class="bi bi-car-front"></i>
+                    </div>
+
+                    <h6>Car Loan</h6>
+                    <small>Vehicle financing</small>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <a class="loan-type-card"
+                   asp-action="Apply"
+                   asp-route-type="Home">
+
+                    <div class="loan-icon">
+                        <i class="bi bi-house-door"></i>
+                    </div>
+
+                    <h6>Home Loan</h6>
+                    <small>Home financing</small>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <a class="loan-type-card"
+                   asp-action="Apply"
+                   asp-route-type="Personal">
+
+                    <div class="loan-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+
+                    <h6>Personal Loan</h6>
+                    <small>Personal expenses</small>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <a class="loan-type-card"
+                   asp-action="Apply"
+                   asp-route-type="Business">
+
+                    <div class="loan-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+
+                    <h6>Business Loan</h6>
+                    <small>Business financing</small>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Status -->
+    <div class="loan-card p-4 mb-4">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <div>
+                <h5 class="section-title mb-1">
+                    <i class="bi bi-list-check me-2 text-warning"></i>
+                    Application Status
+                </h5>
+
+                <p class="text-muted small mb-0">
+                    Track your loan application progress.
+                </p>
+            </div>
+
+            <span class="badge bg-light text-dark border">
+                @totalLoans Applications
+            </span>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+
+                <div class="loan-icon mb-3">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+
+                <h6 class="fw-bold text-dark">No Loan Applications Yet</h6>
+
+                <p class="text-muted mb-0">
+                    Your loan applications will appear here after applying.
+                </p>
+
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Applied</th>
+                            <th>Loan Type</th>
+                            <th class="text-end">Amount</th>
+                            <th>Months</th>
+                            <th class="text-end">Installment</th>
+                            <th>Status</th>
+                            <th>Bank Remarks</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var l in Model.OrderByDescending(x => x.CreatedAt))
+                        {
+                            <tr>
+                                <td>
+                                    @l.CreatedAt.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td class="fw-semibold text-dark">
+                                    @l.LoanType
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    Rs @l.Amount.ToString("N2")
+                                </td>
+
+                                <td>@l.Months</td>
+
+                                <td class="text-end">
+                                    Rs @l.MonthlyInstallment.ToString("N2")
+                                </td>
+
+                                <td>
+                                    <span class="badge @(l.Status == "Approved" ? "bg-success" : l.Status == "Rejected" ? "bg-danger" : l.Status == "Closed" ? "bg-secondary" : "bg-warning text-dark")">
+                                        @l.Status
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="text-muted small">
+                                        @(string.IsNullOrWhiteSpace(l.AdminRemarks)
+                                            ? "-"
+                                            : l.AdminRemarks)
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       asp-action="Details"
+                                       asp-route-id="@l.Id">
+                                        <i class="bi bi-eye me-1"></i>
+                                        Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </div>
+
+</div>

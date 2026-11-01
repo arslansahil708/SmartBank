@@ -1,0 +1,374 @@
+﻿@model Loan
+
+@{
+    ViewData["Title"] = "Loan Details";
+
+    var nextUnpaid = Model.Installments
+        .Where(i => !i.IsPaid)
+        .OrderBy(i => i.No)
+        .FirstOrDefault();
+
+    var paidCount = Model.Installments.Count(i => i.IsPaid);
+    var totalCount = Model.Installments.Count;
+    var progress = totalCount > 0
+        ? (int)Math.Round((double)paidCount / totalCount * 100)
+        : 0;
+}
+
+<style>
+    .loan-page {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .loan-header {
+        background: linear-gradient(135deg, #101f3d, #203c68);
+        color: white;
+        border-radius: 16px;
+        padding: 28px;
+    }
+
+    .loan-card {
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(16, 31, 61, .05);
+    }
+
+    .loan-label {
+        color: #78869a;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .loan-value {
+        color: #172b4d;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .loan-icon {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5edda;
+        color: #a47b25;
+        border-radius: 12px;
+        font-size: 20px;
+    }
+
+    .section-title {
+        color: #172b4d;
+        font-weight: 700;
+    }
+
+    .table thead th {
+        background: #f3f5f9;
+        color: #263b5b;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .btn-gold {
+        background: #c49a3a;
+        color: #101f3d;
+        border: none;
+        font-weight: 600;
+    }
+
+        .btn-gold:hover {
+            background: #ad852c;
+            color: white;
+        }
+
+    .progress {
+        height: 9px;
+        background: #e9edf3;
+        border-radius: 20px;
+    }
+
+    .progress-bar {
+        background: #c49a3a;
+    }
+
+    @@media (max-width: 576px) {
+        .loan-header {
+            padding: 20px;
+        }
+
+            .loan-header h3 {
+                font-size: 21px;
+            }
+    }
+</style>
+
+<div class="loan-page">
+
+    <!-- Header -->
+    <div class="loan-header mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="small text-white-50 mb-2">
+                    <i class="bi bi-bank me-1"></i> SmartBank / Loans
+                </div>
+
+                <h3 class="fw-bold mb-1">
+                    @Model.LoanType Loan
+                </h3>
+
+                <p class="mb-0 text-white-50">
+                    Loan Reference #@Model.Id
+                </p>
+            </div>
+
+            <div>
+                @if (Model.Status == "Approved")
+                {
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        <i class="bi bi-check-circle me-1"></i> Approved
+                    </span>
+                }
+                else if (Model.Status == "Rejected")
+                {
+                    <span class="badge bg-danger fs-6 px-3 py-2">
+                        <i class="bi bi-x-circle me-1"></i> Rejected
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                        <i class="bi bi-clock me-1"></i> @Model.Status
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Summary -->
+    <div class="loan-card p-4 mb-4">
+        <h5 class="section-title mb-4">
+            <i class="bi bi-file-earmark-text me-2 text-warning"></i>
+            Loan Information
+        </h5>
+
+        <div class="row g-4">
+
+            <div class="col-md-4 col-6">
+                <div class="loan-label">Loan Amount</div>
+                <div class="loan-value fs-5">
+                    Rs @Model.Amount.ToString("N2")
+                </div>
+            </div>
+
+            <div class="col-md-4 col-6">
+                <div class="loan-label">Interest Rate</div>
+                <div class="loan-value">
+                    @Model.InterestRate.ToString("0.##")% per year
+                </div>
+            </div>
+
+            <div class="col-md-4 col-6">
+                <div class="loan-label">Loan Period</div>
+                <div class="loan-value">
+                    @Model.Months Months
+                </div>
+            </div>
+
+            <div class="col-md-4 col-6">
+                <div class="loan-label">Monthly Installment</div>
+                <div class="loan-value">
+                    Rs @Model.MonthlyInstallment.ToString("N2")
+                </div>
+            </div>
+
+            <div class="col-md-4 col-6">
+                <div class="loan-label">Loan Account</div>
+                <div class="loan-value">
+                    @(Model.Account?.AccountNumber ?? "-")
+                </div>
+            </div>
+
+            <div class="col-md-4 col-6">
+                <div class="loan-label">Purpose</div>
+                <div class="loan-value">
+                    @(string.IsNullOrWhiteSpace(Model.Purpose) ? "-" : Model.Purpose)
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="loan-label">Bank Remarks</div>
+                <div class="loan-value">
+                    @(string.IsNullOrWhiteSpace(Model.AdminRemarks) ? "No remarks available." : Model.AdminRemarks)
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Installment Progress -->
+    @if (totalCount > 0)
+    {
+        <div class="loan-card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="section-title mb-0">
+                    <i class="bi bi-graph-up me-2 text-warning"></i>
+                    Repayment Progress
+                </h5>
+
+                <span class="fw-bold text-success">@progress%</span>
+            </div>
+
+            <div class="progress mb-3">
+                <div class="progress-bar"
+                     role="progressbar"
+                     style="width: @progress%"
+                     aria-valuenow="@progress"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between text-muted small">
+                <span>Paid: @paidCount</span>
+                <span>Remaining: @(totalCount - paidCount)</span>
+                <span>Total: @totalCount</span>
+            </div>
+        </div>
+    }
+
+    <!-- Installment Schedule -->
+    <div class="loan-card p-4 mb-4">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <h5 class="section-title mb-0">
+                <i class="bi bi-calendar-check me-2 text-warning"></i>
+                Installment Schedule
+            </h5>
+
+            @if (totalCount > 0)
+            {
+                <span class="badge bg-light text-dark border">
+                    @paidCount / @totalCount Paid
+                </span>
+            }
+        </div>
+
+        @if (!Model.Installments.Any())
+        {
+            <div class="text-center py-5">
+                <div class="loan-icon mb-3">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+
+                <h6 class="fw-bold text-dark">No Installments Available</h6>
+
+                <p class="text-muted mb-0">
+                    The schedule will appear after the loan is approved.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Due Date</th>
+                            <th class="text-end">Amount</th>
+                            <th>Status</th>
+                            <th>Paid On</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var i in Model.Installments.OrderBy(x => x.No))
+                        {
+                            <tr>
+                                <td class="fw-semibold">@i.No</td>
+
+                                <td>
+                                    @i.DueDate.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td class="text-end fw-semibold">
+                                    Rs @i.Amount.ToString("N2")
+                                </td>
+
+                                <td>
+                                    @if (i.IsPaid)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i> Paid
+                                        </span>
+                                    }
+                                    else if (i.DueDate < DateTime.Today)
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-exclamation-circle me-1"></i> Overdue
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            Upcoming
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @(i.PaidDate?.ToString("dd MMM yyyy") ?? "-")
+                                </td>
+
+                                <td class="text-end">
+                                    @if (nextUnpaid != null &&
+                                         nextUnpaid.Id == i.Id &&
+                                         Model.Status == "Approved")
+                                    {
+                                        <a class="btn btn-sm btn-gold px-3"
+                                           asp-action="Pay"
+                                           asp-route-id="@i.Id">
+                                            <i class="bi bi-credit-card me-1"></i>
+                                            Pay Now
+                                        </a>
+                                    }
+                                    else if (i.IsPaid)
+                                    {
+                                        <span class="text-success small">
+                                            <i class="bi bi-check2-all"></i> Completed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
+
+    </div>
+
+    <!-- Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a class="btn btn-outline-secondary"
+           asp-action="Index">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Loans
+        </a>
+    </div>
+
+</div>

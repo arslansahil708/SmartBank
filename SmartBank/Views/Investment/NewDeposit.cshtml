@@ -1,0 +1,384 @@
+﻿@model SmartBank.ViewModels.TermDepositViewModel
+
+@{
+    ViewData["Title"] = "New Term Deposit";
+}
+
+<style>
+    .deposit-create-page {
+        padding: 25px 12px;
+    }
+
+    .deposit-create-card {
+        background: white;
+        border: 1px solid #e3eaf3;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(8, 35, 75, 0.08);
+    }
+
+    .deposit-create-header {
+        background: linear-gradient(120deg, #071d40, #123f78);
+        color: white;
+        padding: 27px;
+        text-align: center;
+    }
+
+        .deposit-create-header .header-icon {
+            width: 58px;
+            height: 58px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #f3c65e;
+            font-size: 27px;
+        }
+
+        .deposit-create-header h3 {
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .deposit-create-header p {
+            color: #d5e1f2;
+            font-size: 13px;
+            margin: 0;
+        }
+
+    .deposit-form-body {
+        padding: 30px;
+    }
+
+    .deposit-form-label {
+        color: #09244d;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .deposit-input-group {
+        position: relative;
+    }
+
+        .deposit-input-group .input-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8b9bb0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+    .deposit-form-control {
+        min-height: 46px;
+        border: 1px solid #dce4ef;
+        border-radius: 8px;
+        padding-left: 40px;
+        font-size: 14px;
+    }
+
+        .deposit-form-control:focus {
+            border-color: #1451a0;
+            box-shadow: 0 0 0 3px rgba(20,81,160,0.10);
+        }
+
+        .deposit-form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+    .deposit-validation {
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .deposit-info {
+        background: #f1f5ff;
+        border: 1px solid #dce7f8;
+        border-left: 4px solid #d6a32e;
+        border-radius: 8px;
+        padding: 13px 15px;
+        color: #40516a;
+        font-size: 12px;
+        line-height: 1.7;
+        margin: 20px 0;
+    }
+
+        .deposit-info strong {
+            color: #09244d;
+        }
+
+    .btn-deposit-submit {
+        background: #092f66;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 11px 20px;
+        font-weight: 750;
+        transition: 0.2s;
+    }
+
+        .btn-deposit-submit:hover {
+            background: #1451a0;
+            color: white;
+        }
+
+    .btn-deposit-cancel {
+        border: 1px solid #d6a32e;
+        color: #946c00;
+        background: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-deposit-cancel:hover {
+            background: #fff5d9;
+            color: #79570e;
+        }
+
+    @@media (max-width: 576px) {
+        .deposit-form-body {
+            padding: 22px 17px;
+        }
+
+        .deposit-create-header {
+            padding: 22px;
+        }
+
+        .deposit-form-actions {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .deposit-form-actions a,
+            .deposit-form-actions button {
+                width: 100%;
+                text-align: center;
+            }
+    }
+</style>
+
+<div class="container deposit-create-page">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7 col-md-9">
+
+            <div class="deposit-create-card">
+
+                <!-- Header -->
+                <div class="deposit-create-header">
+
+                    <div class="header-icon">
+                        <i class="bi bi-safe2"></i>
+                    </div>
+
+                    <h3>New Term Deposit</h3>
+
+                    <p>
+                        Open a fixed-term deposit and grow your savings.
+                    </p>
+
+                </div>
+
+                <!-- Form -->
+                <div class="deposit-form-body">
+
+                    <form asp-action="NewDeposit" method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger py-2 small">
+                        </div>
+
+                        <!-- Account -->
+                        <div class="mb-4">
+
+                            <label asp-for="AccountId"
+                                   class="form-label deposit-form-label">
+
+                                <i class="bi bi-bank me-2 text-warning"></i>
+                                Select Account
+
+                            </label>
+
+                            <div class="deposit-input-group">
+
+                                <i class="bi bi-wallet2 input-icon"></i>
+
+                                <select asp-for="AccountId"
+                                        asp-items="@((SelectList)ViewBag.Accounts)"
+                                        class="form-select deposit-form-control">
+
+                                    <option value="">-- Select account --</option>
+
+                                </select>
+
+                            </div>
+
+                            <span asp-validation-for="AccountId"
+                                  class="text-danger deposit-validation">
+                            </span>
+
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="mb-4">
+
+                            <label asp-for="Amount"
+                                   class="form-label deposit-form-label">
+
+                                <i class="bi bi-cash-stack me-2 text-warning"></i>
+                                Deposit Amount (Rs)
+
+                            </label>
+
+                            <div class="deposit-input-group">
+
+                                <i class="bi bi-currency-rupee input-icon"></i>
+
+                                <input asp-for="Amount"
+                                       type="number"
+                                       step="0.01"
+                                       min="1"
+                                       class="form-control deposit-form-control"
+                                       placeholder="Enter deposit amount" />
+
+                            </div>
+
+                            <span asp-validation-for="Amount"
+                                  class="text-danger deposit-validation">
+                            </span>
+
+                        </div>
+
+                        <!-- Period -->
+                        <div class="mb-4">
+
+                            <label asp-for="Months"
+                                   class="form-label deposit-form-label">
+
+                                <i class="bi bi-calendar-range me-2 text-warning"></i>
+                                Deposit Period
+
+                            </label>
+
+                            <div class="deposit-input-group">
+
+                                <i class="bi bi-clock-history input-icon"></i>
+
+                                <select asp-for="Months"
+                                        class="form-select deposit-form-control">
+
+                                    @foreach (int m in Bank.DepositMonths)
+                                    {
+                                        <option value="@m"
+                                                selected="@(Model.Months == m)">
+
+                                            @m months - @Bank.DepositRate(m).ToString("0.##")% per year
+
+                                        </option>
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <span asp-validation-for="Months"
+                                  class="text-danger deposit-validation">
+                            </span>
+
+                        </div>
+
+                        <!-- PIN -->
+                        <div class="mb-3">
+
+                            <label asp-for="Pin"
+                                   class="form-label deposit-form-label">
+
+                                <i class="bi bi-shield-lock me-2 text-warning"></i>
+                                Transaction PIN
+
+                            </label>
+
+                            <div class="deposit-input-group">
+
+                                <i class="bi bi-key input-icon"></i>
+
+                                <input asp-for="Pin"
+                                       type="password"
+                                       class="form-control deposit-form-control"
+                                       maxlength="4"
+                                       autocomplete="off"
+                                       placeholder="Enter your 4-digit PIN" />
+
+                            </div>
+
+                            <span asp-validation-for="Pin"
+                                  class="text-danger deposit-validation">
+                            </span>
+
+                            <small class="text-muted d-block mt-2">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Enter your transaction PIN to authorize this deposit.
+                            </small>
+
+                        </div>
+
+                        <!-- Information -->
+                        <div class="deposit-info">
+
+                            <strong>
+                                <i class="bi bi-lightbulb me-1"></i>
+                                Before You Continue
+                            </strong>
+
+                            <ul class="mb-0 mt-1 ps-3">
+                                <li>Select the account from which the deposit will be created.</li>
+                                <li>Choose your preferred deposit period.</li>
+                                <li>Make sure your account has sufficient balance.</li>
+                                <li>Profit rate is displayed as an annual rate.</li>
+                            </ul>
+
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="deposit-form-actions d-flex gap-2 flex-wrap">
+
+                            <button type="submit"
+                                    class="btn-deposit-submit">
+
+                                <i class="bi bi-check-circle me-2"></i>
+                                Create Deposit
+
+                            </button>
+
+                            <a class="btn-deposit-cancel"
+                               asp-action="Deposits">
+
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

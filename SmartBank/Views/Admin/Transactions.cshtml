@@ -1,0 +1,362 @@
+﻿@model List<BankTransaction>
+
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<style>
+    .transactions-page {
+        padding: 25px 10px;
+    }
+
+    .transactions-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        border-bottom: 4px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .transactions-header h3 {
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .transactions-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .search-card {
+        background: white;
+        border: 1px solid #e0e8f8;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 18px rgba(8, 35, 75, 0.05);
+    }
+
+        .search-card .form-control {
+            border: 1px solid #dce4f0;
+            border-radius: 9px;
+            padding: 10px 13px;
+        }
+
+            .search-card .form-control:focus {
+                border-color: #1451a0;
+                box-shadow: 0 0 0 3px rgba(20, 81, 160, 0.1);
+            }
+
+    .btn-search {
+        background: #092f66;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 10px 20px;
+        font-weight: 650;
+    }
+
+        .btn-search:hover {
+            background: #1451a0;
+            color: white;
+        }
+
+    .transactions-table-card {
+        background: white;
+        border: 1px solid #e0e8f8;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(8, 35, 75, 0.06);
+    }
+
+    .section-title {
+        color: #09244d;
+        font-weight: 750;
+        margin-bottom: 18px;
+    }
+
+    .latest-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #fff5d9;
+        color: #946c00;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 17px;
+    }
+
+    .transactions-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .transactions-table {
+        min-width: 950px;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .transactions-table thead th {
+            background: #09244d;
+            color: white;
+            font-size: 12px;
+            font-weight: 650;
+            padding: 15px 12px;
+            white-space: nowrap;
+            border: none;
+        }
+
+        .transactions-table tbody td {
+            padding: 14px 12px;
+            font-size: 13px;
+            color: #394b64;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .transactions-table tbody tr:hover {
+            background: #f5f8ff;
+        }
+
+    .account-number {
+        color: #1451a0;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .reference-text {
+        color: #718096;
+        font-size: 12px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .description-text {
+        color: #394b64;
+        max-width: 260px;
+        overflow-wrap: anywhere;
+    }
+
+    .debit-amount {
+        color: #dc3545 !important;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .credit-amount {
+        color: #087b46 !important;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .empty-state {
+        padding: 45px 15px !important;
+        color: #718096 !important;
+        text-align: center;
+    }
+
+        .empty-state i {
+            display: block;
+            font-size: 35px;
+            color: #d6a32e;
+            margin-bottom: 10px;
+        }
+
+    .transactions-footer {
+        margin-top: 18px;
+        color: #718096;
+        font-size: 12px;
+    }
+
+    @@media (max-width: 768px) {
+        .transactions-header {
+            padding: 22px;
+        }
+
+        .transactions-table-card {
+            padding: 13px;
+        }
+    }
+</style>
+
+<div class="container-fluid transactions-page">
+
+    <!-- Header -->
+    <div class="transactions-header">
+
+        <div class="d-flex align-items-center gap-3">
+
+            <i class="bi bi-arrow-left-right fs-1 text-warning"></i>
+
+            <div>
+                <h3>Transactions</h3>
+
+                <p>
+                    <i class="bi bi-shield-check me-1"></i>
+                    Monitor and review banking transactions
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <div class="search-card">
+
+        <form method="get" class="row g-3 align-items-center">
+
+            <div class="col-md-9">
+
+                <div class="input-group">
+
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-search text-primary"></i>
+                    </span>
+
+                    <input name="q"
+                           value="@ViewBag.Q"
+                           class="form-control border-start-0"
+                           placeholder="Search reference, account number or details..." />
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <button type="submit" class="btn btn-search w-100">
+
+                    <i class="bi bi-search me-1"></i>
+                    Search Transactions
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="transactions-table-card">
+
+        <h5 class="section-title">
+            <i class="bi bi-receipt text-warning me-2"></i>
+            Transaction History
+        </h5>
+
+        <div class="latest-label">
+            <i class="bi bi-clock-history"></i>
+            Showing the latest 200 transactions
+        </div>
+
+        <div class="transactions-table-wrapper">
+
+            <table class="table transactions-table">
+
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Account Number</th>
+                        <th>Reference</th>
+                        <th>Details</th>
+                        <th class="text-end">Debit (Rs)</th>
+                        <th class="text-end">Credit (Rs)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var t in Model)
+                    {
+                        <tr>
+
+                            <td class="text-nowrap">
+
+                                <i class="bi bi-calendar3 text-secondary me-1"></i>
+
+                                @t.Date.ToString("dd MMM yyyy")
+
+                                <div class="small text-muted mt-1">
+                                    <i class="bi bi-clock me-1"></i>
+                                    @t.Date.ToString("HH:mm")
+                                </div>
+
+                            </td>
+
+                            <td>
+                                <span class="account-number">
+                                    @(t.Account?.AccountNumber ?? "-")
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="reference-text">
+                                    @(string.IsNullOrWhiteSpace(t.Reference)
+                                        ? "-"
+                                        : t.Reference)
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="description-text">
+                                    @t.Description
+                                </div>
+                            </td>
+
+                            <td class="text-end debit-amount">
+
+                                @(t.Type == "Debit"
+                                    ? t.Amount.ToString("N2")
+                                    : "-")
+
+                            </td>
+
+                            <td class="text-end credit-amount">
+
+                                @(t.Type == "Credit"
+                                    ? t.Amount.ToString("N2")
+                                    : "-")
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="empty-state">
+
+                                <i class="bi bi-receipt-cutoff"></i>
+
+                                <strong>No transactions found</strong>
+
+                                <div class="small mt-1">
+                                    Try searching with another reference or account number.
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="transactions-footer">
+
+            <i class="bi bi-info-circle me-1"></i>
+
+            Transaction records are displayed according to the selected search criteria.
+
+        </div>
+
+    </div>
+
+</div>

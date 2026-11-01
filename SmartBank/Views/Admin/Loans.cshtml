@@ -1,0 +1,401 @@
+﻿@model List<Loan>
+
+@{
+    ViewData["Title"] = "Loan Applications";
+}
+
+<style>
+    .loans-page {
+        padding: 25px 10px;
+    }
+
+    .loans-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 28px;
+        border-radius: 16px;
+        border-bottom: 4px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .loans-header h3 {
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .loans-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .loan-table-card {
+        background: white;
+        border: 1px solid #e0e8f8;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(8, 35, 75, 0.06);
+    }
+
+    .loan-table-title {
+        color: #09244d;
+        font-weight: 750;
+        margin-bottom: 18px;
+    }
+
+    .loan-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .loan-table {
+        min-width: 1100px;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .loan-table thead th {
+            background: #09244d;
+            color: white;
+            font-size: 12px;
+            font-weight: 650;
+            padding: 15px 12px;
+            white-space: nowrap;
+            border: none;
+        }
+
+        .loan-table tbody td {
+            padding: 14px 12px;
+            font-size: 13px;
+            color: #394b64;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .loan-table tbody tr:hover {
+            background: #f5f8ff;
+        }
+
+    .loan-amount {
+        color: #09244d;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .loan-customer {
+        color: #09244d;
+        font-weight: 700;
+    }
+
+    .loan-type {
+        background: #e9f0ff;
+        color: #1451a0;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #946c00;
+    }
+
+    .status-approved {
+        background: #d9f5e5;
+        color: #087b46;
+    }
+
+    .status-rejected {
+        background: #ffe1e1;
+        color: #bd2525;
+    }
+
+    .decision-box {
+        min-width: 245px;
+    }
+
+    .remarks-input {
+        border: 1px solid #dce4f0;
+        border-radius: 8px;
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+        .remarks-input:focus {
+            border-color: #1451a0;
+            box-shadow: 0 0 0 3px rgba(20, 81, 160, 0.1);
+        }
+
+    .btn-approve {
+        background: #087b46;
+        color: white;
+        border: none;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 650;
+        padding: 7px 13px;
+    }
+
+        .btn-approve:hover {
+            background: #056438;
+            color: white;
+        }
+
+    .btn-reject {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 650;
+        padding: 7px 13px;
+    }
+
+        .btn-reject:hover {
+            background: #b02a37;
+            color: white;
+        }
+
+    .remarks-text {
+        color: #718096;
+        font-size: 12px;
+        max-width: 230px;
+        overflow-wrap: anywhere;
+    }
+
+    .empty-state {
+        padding: 45px 15px !important;
+        color: #718096 !important;
+        text-align: center;
+    }
+
+        .empty-state i {
+            display: block;
+            font-size: 35px;
+            color: #d6a32e;
+            margin-bottom: 10px;
+        }
+
+    @@media (max-width: 768px) {
+        .loans-header {
+            padding: 22px;
+        }
+
+        .loan-table-card {
+            padding: 13px;
+        }
+    }
+</style>
+
+<div class="container-fluid loans-page">
+
+    <!-- Header -->
+    <div class="loans-header">
+
+        <div class="d-flex align-items-center gap-3">
+
+            <i class="bi bi-bank fs-1 text-warning"></i>
+
+            <div>
+                <h3>Loan Applications</h3>
+
+                <p>
+                    <i class="bi bi-shield-check me-1"></i>
+                    Review and manage customer loan applications
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Applications Table -->
+    <div class="loan-table-card">
+
+        <h5 class="loan-table-title">
+            <i class="bi bi-clipboard-data text-warning me-2"></i>
+            All Loan Applications
+        </h5>
+
+        <div class="loan-table-wrapper">
+
+            <table class="table loan-table">
+
+                <thead>
+                    <tr>
+                        <th>Applied</th>
+                        <th>Customer</th>
+                        <th>Type</th>
+                        <th class="text-end">Amount (Rs)</th>
+                        <th>Months</th>
+                        <th class="text-end">Installment (Rs)</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                        <th style="min-width: 260px;">Decision</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var l in Model)
+                    {
+                        <tr>
+
+                            <td class="text-nowrap">
+                                <i class="bi bi-calendar3 text-secondary me-1"></i>
+                                @l.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+                                <span class="loan-customer">
+                                    @l.Customer?.FullName
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="loan-type">
+                                    @l.LoanType
+                                </span>
+                            </td>
+
+                            <td class="text-end loan-amount">
+                                @l.Amount.ToString("N2")
+                            </td>
+
+                            <td>
+                                @l.Months
+                            </td>
+
+                            <td class="text-end loan-amount">
+                                @l.MonthlyInstallment.ToString("N2")
+                            </td>
+
+                            <td>
+                                @l.Purpose
+                            </td>
+
+                            <td>
+                                @if (l.Status == "Pending")
+                                {
+                                    <span class="status-badge status-pending">
+                                        <i class="bi bi-clock me-1"></i>
+                                        Pending
+                                    </span>
+                                }
+                                else if (l.Status == "Approved")
+                                {
+                                    <span class="status-badge status-approved">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Approved
+                                    </span>
+                                }
+                                else if (l.Status == "Rejected")
+                                {
+                                    <span class="status-badge status-rejected">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Rejected
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-pending">
+                                        @l.Status
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+
+                                <div class="decision-box">
+
+                                    @if (l.Status == "Pending")
+                                    {
+                                        <form asp-action="DecideLoan" method="post">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@l.Id" />
+
+                                            <input name="remarks"
+                                                   class="form-control form-control-sm remarks-input"
+                                                   placeholder="Remarks (optional)" />
+
+                                            <div class="d-flex gap-2">
+
+                                                <button type="submit"
+                                                        name="decision"
+                                                        value="approve"
+                                                        class="btn btn-approve">
+
+                                                    <i class="bi bi-check-lg me-1"></i>
+                                                    Approve
+
+                                                </button>
+
+                                                <button type="submit"
+                                                        name="decision"
+                                                        value="reject"
+                                                        class="btn btn-reject">
+
+                                                    <i class="bi bi-x-lg me-1"></i>
+                                                    Reject
+
+                                                </button>
+
+                                            </div>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <div class="remarks-text">
+                                            <strong>Admin Remarks:</strong>
+                                            @(string.IsNullOrWhiteSpace(l.AdminRemarks)
+                                                ? "No remarks"
+                                                : l.AdminRemarks)
+                                        </div>
+                                    }
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="empty-state">
+
+                                <i class="bi bi-folder2-open"></i>
+
+                                <strong>No loan applications found</strong>
+
+                                <div class="small mt-1">
+                                    Customer loan applications will appear here.
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,462 @@
+﻿@model StatementViewModel
+
+@{
+    ViewData["Title"] = "Statement";
+
+    var monthName = Model.Month == null
+        ? "Annual " + Model.Year
+        : System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(Model.Month.Value) + " " + Model.Year;
+
+    var totalDebit = Model.Transactions
+        .Where(t => t.Type == "Debit")
+        .Sum(t => t.Amount);
+
+    var totalCredit = Model.Transactions
+        .Where(t => t.Type == "Credit")
+        .Sum(t => t.Amount);
+}
+
+<style>
+    body {
+        background: #f1f5ff;
+    }
+
+    .statement-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 15px;
+    }
+
+    .statement-card {
+        background: #fff;
+        border-radius: 22px;
+        padding: 30px;
+        border: 1px solid #e0e8f8;
+        box-shadow: 0 8px 30px rgba(8, 35, 75, 0.10);
+    }
+
+    .statement-header {
+        background: linear-gradient(120deg, #061d43, #07509a);
+        color: white;
+        padding: 30px;
+        border-radius: 17px;
+        border-bottom: 5px solid #e7b94f;
+        margin-bottom: 25px;
+    }
+
+        .statement-header h2 {
+            font-weight: 750;
+            margin-bottom: 8px;
+        }
+
+        .statement-header p {
+            color: #dce8ff;
+            margin: 0;
+        }
+
+    .header-icon {
+        font-size: 52px;
+        color: #f3c65e;
+    }
+
+    .account-info {
+        background: #f0f4ff;
+        border: 1px solid #d6e2ff;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .info-label {
+        color: #718096;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .info-value {
+        color: #09244d;
+        font-size: 17px;
+        font-weight: 700;
+        margin-top: 5px;
+        overflow-wrap: anywhere;
+    }
+
+    .filter-card {
+        background: #fff;
+        border: 1px solid #e0e8f8;
+        border-radius: 15px;
+        padding: 22px;
+        margin-bottom: 25px;
+    }
+
+    .filter-title {
+        color: #09244d;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .form-label {
+        color: #344563;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #d5deed;
+        border-radius: 9px;
+        padding: 11px;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #d5a63b;
+            box-shadow: 0 0 0 3px rgba(213, 166, 59, 0.12);
+        }
+
+    .btn-show {
+        background: #087b46;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 25px;
+        font-weight: 600;
+    }
+
+        .btn-show:hover {
+            background: #056238;
+            color: white;
+        }
+
+    .summary-card {
+        padding: 22px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        height: 100%;
+    }
+
+    .debit-card {
+        background: #fff1f1;
+        border: 1px solid #ffd4d4;
+    }
+
+    .credit-card {
+        background: #edfff5;
+        border: 1px solid #c8f0d9;
+    }
+
+    .summary-card .label {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .summary-card .amount {
+        font-size: 25px;
+        font-weight: 800;
+        margin-top: 8px;
+    }
+
+    .debit-card .amount {
+        color: #dc3545;
+    }
+
+    .credit-card .amount {
+        color: #087b46;
+    }
+
+    .summary-icon {
+        font-size: 35px;
+    }
+
+    .section-heading {
+        color: #09244d;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+        .section-heading i {
+            color: #d6a32e;
+            font-size: 25px;
+        }
+
+    .transaction-wrapper {
+        border: 1px solid #dce5f7;
+        border-radius: 13px;
+        overflow-x: auto;
+    }
+
+        .transaction-wrapper table {
+            margin-bottom: 0;
+        }
+
+        .transaction-wrapper thead {
+            background: #092b59;
+            color: white;
+        }
+
+        .transaction-wrapper th {
+            padding: 15px;
+            white-space: nowrap;
+        }
+
+        .transaction-wrapper td {
+            padding: 13px 15px;
+            vertical-align: middle;
+        }
+
+        .transaction-wrapper tbody tr:hover {
+            background: #f2f6ff;
+        }
+
+    .btn-back {
+        background: white;
+        color: #123b78;
+        border: 1px solid #cbd7ea;
+        border-radius: 10px;
+        padding: 12px 22px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #edf3ff;
+            color: #09244d;
+        }
+
+    @@media (max-width: 768px) {
+        .statement-card {
+            padding: 17px;
+        }
+
+        .statement-header {
+            padding: 22px;
+        }
+
+            .statement-header h2 {
+                font-size: 24px;
+            }
+
+        .header-icon {
+            font-size: 38px;
+        }
+
+        .summary-card .amount {
+            font-size: 21px;
+        }
+
+        .transaction-wrapper table {
+            min-width: 650px;
+        }
+    }
+</style>
+
+<div class="container statement-container">
+
+    <div class="statement-card">
+
+        <!-- Header -->
+        <div class="statement-header">
+            <div class="d-flex align-items-center gap-4">
+
+                <i class="bi bi-file-earmark-spreadsheet header-icon"></i>
+
+                <div>
+                    <h2>Account Statement</h2>
+
+                    <p>
+                        <i class="bi bi-calendar-check me-1"></i>
+                        View and manage your banking transactions
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Account Information -->
+        <div class="account-info">
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-credit-card-2-front fs-1 text-primary"></i>
+
+                        <div>
+                            <div class="info-label">Account Type</div>
+                            <div class="info-value">
+                                @Model.Account.AccountType Account
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-hash fs-1 text-primary"></i>
+
+                        <div>
+                            <div class="info-label">Account Number</div>
+                            <div class="info-value">
+                                @Model.Account.AccountNumber
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Statement Filter -->
+        <div class="filter-card">
+
+            <h5 class="filter-title">
+                <i class="bi bi-funnel-fill me-2 text-warning"></i>
+                Filter Statement
+            </h5>
+
+            <form method="get" asp-action="Statement">
+
+                <input type="hidden"
+                       name="id"
+                       value="@Model.Account.Id" />
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-3">
+                        <label class="form-label">Select Year</label>
+
+                        <input type="number"
+                               name="year"
+                               value="@Model.Year"
+                               class="form-control"
+                               min="2000"
+                               max="2100" />
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="form-label">Select Month</label>
+
+                        <select name="month" class="form-select">
+
+                            <option value=""
+                                    selected="@(Model.Month == null)">
+                                Full Year (Annual)
+                            </option>
+
+                            @for (int m = 1; m <= 12; m++)
+                            {
+                                <option value="@m"
+                                        selected="@(Model.Month == m)">
+                                    @System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(m)
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-show w-100">
+                            <i class="bi bi-search me-2"></i>
+                            Show Statement
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Statement Period -->
+        <h5 class="section-heading">
+            <i class="bi bi-calendar2-week"></i>
+            @monthName
+        </h5>
+
+        <!-- Debit / Credit Summary -->
+        <div class="row g-3 mb-2">
+
+            <div class="col-md-6">
+
+                <div class="summary-card debit-card">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <div class="label">Total Debit</div>
+
+                            <div class="amount">
+                                Rs @totalDebit.ToString("N2")
+                            </div>
+                        </div>
+
+                        <i class="bi bi-arrow-up-right-circle summary-icon text-danger"></i>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Total money spent or transferred
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="summary-card credit-card">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <div class="label">Total Credit</div>
+
+                            <div class="amount">
+                                Rs @totalCredit.ToString("N2")
+                            </div>
+                        </div>
+
+                        <i class="bi bi-arrow-down-left-circle summary-icon text-success"></i>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Total money received
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Transactions -->
+        <div class="section-heading mt-3">
+            <i class="bi bi-clock-history"></i>
+            <h5 class="mb-0">Transaction History</h5>
+        </div>
+
+        <div class="transaction-wrapper">
+
+            <partial name="_TransactionTable"
+                     model="Model.Transactions" />
+
+        </div>
+
+        <!-- Back Button -->
+        <div class="mt-4">
+
+            <a class="btn-back" asp-action="Index">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Accounts
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

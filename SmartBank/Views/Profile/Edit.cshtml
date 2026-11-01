@@ -1,0 +1,274 @@
+﻿@model SmartBank.ViewModels.ProfileEditViewModel
+
+@{
+    ViewData["Title"] = "Update Profile";
+}
+
+<style>
+    .profile-page {
+        --navy: #102b46;
+        --gold: #c9a44c;
+        min-height: 75vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 35px 12px;
+    }
+
+    .profile-card {
+        width: 100%;
+        max-width: 540px;
+        background: white;
+        border: 1px solid #e8edf2;
+        border-radius: 19px;
+        overflow: hidden;
+        box-shadow: 0 12px 35px rgba(16,43,70,.09);
+    }
+
+    .profile-header {
+        background: linear-gradient(120deg, #102b46, #234e70);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .profile-icon {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 15px;
+        border-radius: 19px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.13);
+        color: #e6c777;
+        font-size: 30px;
+    }
+
+    .profile-body {
+        padding: 30px;
+    }
+
+    .profile-label {
+        color: #263d53;
+        font-size: 13px;
+        font-weight: 650;
+        margin-bottom: 8px;
+    }
+
+    .profile-input-group {
+        position: relative;
+    }
+
+        .profile-input-group .form-control {
+            height: 49px;
+            border: 1px solid #dce3eb;
+            border-radius: 9px;
+            padding-left: 44px;
+            font-size: 14px;
+        }
+
+            .profile-input-group .form-control:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 3px rgba(201,164,76,.13);
+            }
+
+    .profile-input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8493a3;
+        z-index: 2;
+    }
+
+    .profile-help {
+        font-size: 12px;
+        color: #8995a2;
+        margin-top: 7px;
+    }
+
+    .btn-save-profile {
+        background: var(--navy);
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 12px 20px;
+        font-weight: 650;
+        transition: .2s;
+    }
+
+        .btn-save-profile:hover {
+            background: #234e70;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    .btn-cancel-profile {
+        background: white;
+        border: 1px solid #dce3eb;
+        color: #536579;
+        border-radius: 9px;
+        padding: 12px 20px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 600;
+    }
+
+        .btn-cancel-profile:hover {
+            background: #f3f5f8;
+            color: var(--navy);
+        }
+
+    .profile-note {
+        background: #fbf7eb;
+        border: 1px solid #f0e5c9;
+        color: #806b3e;
+        border-radius: 10px;
+        padding: 13px;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    @@media (max-width: 480px) {
+        .profile-body {
+            padding: 22px;
+        }
+
+        .profile-header {
+            padding: 25px 18px;
+        }
+    }
+</style>
+
+<div class="profile-page">
+
+    <div class="profile-card">
+
+        <!-- Header -->
+        <div class="profile-header">
+
+            <div class="profile-icon">
+                <i class="bi bi-person-gear"></i>
+            </div>
+
+            <h3 class="fw-bold mb-2">Update Profile</h3>
+
+            <p class="text-white-50 mb-0 small">
+                Keep your SmartBank contact information up to date.
+            </p>
+
+        </div>
+
+        <!-- Form -->
+        <div class="profile-body">
+
+            <div class="mb-4">
+                <h5 class="fw-bold mb-1" style="color:#102b46;">
+                    Contact Information
+                </h5>
+
+                <p class="text-muted small mb-0">
+                    Update your registered email address and phone number.
+                </p>
+            </div>
+
+            <form asp-action="Edit" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger small mb-3">
+                </div>
+
+                <!-- Email -->
+                <div class="mb-4">
+
+                    <label asp-for="Email"
+                           class="form-label profile-label">
+                    </label>
+
+                    <div class="profile-input-group">
+                        <i class="bi bi-envelope profile-input-icon"></i>
+
+                        <input asp-for="Email"
+                               class="form-control"
+                               type="email"
+                               placeholder="Enter your email address"
+                               autocomplete="email" />
+                    </div>
+
+                    <span asp-validation-for="Email"
+                          class="text-danger small">
+                    </span>
+
+                    <div class="profile-help">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Use an active email address.
+                    </div>
+
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-4">
+
+                    <label asp-for="Phone"
+                           class="form-label profile-label">
+                    </label>
+
+                    <div class="profile-input-group">
+                        <i class="bi bi-telephone profile-input-icon"></i>
+
+                        <input asp-for="Phone"
+                               class="form-control"
+                               type="tel"
+                               placeholder="Enter your phone number"
+                               autocomplete="tel" />
+                    </div>
+
+                    <span asp-validation-for="Phone"
+                          class="text-danger small">
+                    </span>
+
+                    <div class="profile-help">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Enter your active contact number.
+                    </div>
+
+                </div>
+
+                <!-- Note -->
+                <div class="profile-note mb-4">
+                    <i class="bi bi-shield-lock-fill me-1"></i>
+                    Your contact information is used for important
+                    SmartBank account updates and notifications.
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex flex-column gap-2">
+
+                    <button type="submit"
+                            class="btn btn-save-profile w-100">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Save Changes
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn-cancel-profile">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
